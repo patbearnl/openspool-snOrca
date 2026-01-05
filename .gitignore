@@ -26,6 +26,7 @@ deps/build*/*
 install_*
 build_*/
 Snapmaker_Orca/
+snOrca_OpenSpool/
 SVG
 src/Snapmaker_Orca-doc/
 .idea/
