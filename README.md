@@ -74,3 +74,4 @@ See `LICENSE.txt`.
 - Snapmaker Orca (upstream)
 - OrcaSlicer / Bambu Studio / PrusaSlicer / Slic3r
 - OpenSpool protocol community
+- paxx12 for being the first with Snapmaker U1 custom firmware
