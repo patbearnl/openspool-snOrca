@@ -2,6 +2,8 @@
 
 Community fork of **Snapmaker Orca** that adds **OpenSpool** tag support for Snapmaker U1 (and other setups that report OpenSpool-compatible spool metadata).
 
+Based on Snapmaker Orca `2.2.1`.
+
 This fork focuses on one thing: turning the spool info coming from the printer into **"Machine Filament"** entries (tool number + color block) by matching it against the existing filament preset library.
 
 ## What it does
