@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -47,9 +46,9 @@ class ColorScanActivity : ComponentActivity() {
     private val requestPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
             if (granted) {
-                setContent { MaterialTheme { ScanScreen(onDone = ::returnColor, onCancel = ::finish) } }
+                setContent { OpenSpoolTagWriterTheme { ScanScreen(onDone = ::returnColor, onCancel = ::finish) } }
             } else {
-                setContent { MaterialTheme { PermissionDenied(onCancel = ::finish) } }
+                setContent { OpenSpoolTagWriterTheme { PermissionDenied(onCancel = ::finish) } }
             }
         }
 
@@ -58,7 +57,7 @@ class ColorScanActivity : ComponentActivity() {
 
         val granted = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
         if (granted) {
-            setContent { MaterialTheme { ScanScreen(onDone = ::returnColor, onCancel = ::finish) } }
+            setContent { OpenSpoolTagWriterTheme { ScanScreen(onDone = ::returnColor, onCancel = ::finish) } }
         } else {
             requestPermission.launch(Manifest.permission.CAMERA)
         }
