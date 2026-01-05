@@ -1,0 +1,854 @@
+[
+  {
+    "brand": "AliZ",
+    "type": "PA-CF",
+    "subtype": "",
+    "display_name": "AliZ PA-CF"
+  },
+  {
+    "brand": "AliZ",
+    "type": "PETG",
+    "subtype": "",
+    "display_name": "AliZ PETG"
+  },
+  {
+    "brand": "AliZ",
+    "type": "PETG-CF",
+    "subtype": "",
+    "display_name": "AliZ PETG-CF"
+  },
+  {
+    "brand": "AliZ",
+    "type": "PETG-Metal",
+    "subtype": "",
+    "display_name": "AliZ PETG-Metal"
+  },
+  {
+    "brand": "AliZ",
+    "type": "PLA",
+    "subtype": "",
+    "display_name": "AliZ PLA"
+  },
+  {
+    "brand": "Bambu",
+    "type": "ABS",
+    "subtype": "",
+    "display_name": "Bambu ABS"
+  },
+  {
+    "brand": "Bambu",
+    "type": "ABS-GF",
+    "subtype": "",
+    "display_name": "Bambu ABS-GF"
+  },
+  {
+    "brand": "Bambu",
+    "type": "ASA",
+    "subtype": "",
+    "display_name": "Bambu ASA"
+  },
+  {
+    "brand": "Bambu",
+    "type": "ASA-Aero",
+    "subtype": "",
+    "display_name": "Bambu ASA-Aero"
+  },
+  {
+    "brand": "Bambu",
+    "type": "ASA-CF",
+    "subtype": "",
+    "display_name": "Bambu ASA-CF"
+  },
+  {
+    "brand": "Bambu",
+    "type": "PA-CF",
+    "subtype": "",
+    "display_name": "Bambu PA-CF"
+  },
+  {
+    "brand": "Bambu",
+    "type": "PA6-CF",
+    "subtype": "",
+    "display_name": "Bambu PA6-CF"
+  },
+  {
+    "brand": "Bambu",
+    "type": "PA6-GF",
+    "subtype": "",
+    "display_name": "Bambu PA6-GF"
+  },
+  {
+    "brand": "Bambu",
+    "type": "PAHT-CF",
+    "subtype": "",
+    "display_name": "Bambu PAHT-CF"
+  },
+  {
+    "brand": "Bambu",
+    "type": "PC",
+    "subtype": "",
+    "display_name": "Bambu PC"
+  },
+  {
+    "brand": "Bambu",
+    "type": "PC",
+    "subtype": "FR",
+    "display_name": "Bambu PC FR"
+  },
+  {
+    "brand": "Bambu",
+    "type": "PET-CF",
+    "subtype": "",
+    "display_name": "Bambu PET-CF"
+  },
+  {
+    "brand": "Bambu",
+    "type": "PETG",
+    "subtype": "Basic",
+    "display_name": "Bambu PETG Basic"
+  },
+  {
+    "brand": "Bambu",
+    "type": "PETG",
+    "subtype": "HF",
+    "display_name": "Bambu PETG HF"
+  },
+  {
+    "brand": "Bambu",
+    "type": "PETG",
+    "subtype": "Translucent",
+    "display_name": "Bambu PETG Translucent"
+  },
+  {
+    "brand": "Bambu",
+    "type": "PETG-CF",
+    "subtype": "",
+    "display_name": "Bambu PETG-CF"
+  },
+  {
+    "brand": "Bambu",
+    "type": "PLA",
+    "subtype": "Aero",
+    "display_name": "Bambu PLA Aero"
+  },
+  {
+    "brand": "Bambu",
+    "type": "PLA",
+    "subtype": "Basic",
+    "display_name": "Bambu PLA Basic"
+  },
+  {
+    "brand": "Bambu",
+    "type": "PLA",
+    "subtype": "Dynamic",
+    "display_name": "Bambu PLA Dynamic"
+  },
+  {
+    "brand": "Bambu",
+    "type": "PLA",
+    "subtype": "Galaxy",
+    "display_name": "Bambu PLA Galaxy"
+  },
+  {
+    "brand": "Bambu",
+    "type": "PLA",
+    "subtype": "Glow",
+    "display_name": "Bambu PLA Glow"
+  },
+  {
+    "brand": "Bambu",
+    "type": "PLA",
+    "subtype": "Impact",
+    "display_name": "Bambu PLA Impact"
+  },
+  {
+    "brand": "Bambu",
+    "type": "PLA",
+    "subtype": "Marble",
+    "display_name": "Bambu PLA Marble"
+  },
+  {
+    "brand": "Bambu",
+    "type": "PLA",
+    "subtype": "Matte",
+    "display_name": "Bambu PLA Matte"
+  },
+  {
+    "brand": "Bambu",
+    "type": "PLA",
+    "subtype": "Metal",
+    "display_name": "Bambu PLA Metal"
+  },
+  {
+    "brand": "Bambu",
+    "type": "PLA",
+    "subtype": "Silk",
+    "display_name": "Bambu PLA Silk"
+  },
+  {
+    "brand": "Bambu",
+    "type": "PLA",
+    "subtype": "Silk+",
+    "display_name": "Bambu PLA Silk+"
+  },
+  {
+    "brand": "Bambu",
+    "type": "PLA",
+    "subtype": "Sparkle",
+    "display_name": "Bambu PLA Sparkle"
+  },
+  {
+    "brand": "Bambu",
+    "type": "PLA",
+    "subtype": "Tough",
+    "display_name": "Bambu PLA Tough"
+  },
+  {
+    "brand": "Bambu",
+    "type": "PLA",
+    "subtype": "Wood",
+    "display_name": "Bambu PLA Wood"
+  },
+  {
+    "brand": "Bambu",
+    "type": "PLA-CF",
+    "subtype": "",
+    "display_name": "Bambu PLA-CF"
+  },
+  {
+    "brand": "Bambu",
+    "type": "PPA-CF",
+    "subtype": "",
+    "display_name": "Bambu PPA-CF"
+  },
+  {
+    "brand": "Bambu",
+    "type": "PVA",
+    "subtype": "",
+    "display_name": "Bambu PVA"
+  },
+  {
+    "brand": "Bambu",
+    "type": "Support",
+    "subtype": "for ABS",
+    "display_name": "Bambu Support for ABS"
+  },
+  {
+    "brand": "Bambu",
+    "type": "Support",
+    "subtype": "For PA PET",
+    "display_name": "Bambu Support For PA PET"
+  },
+  {
+    "brand": "Bambu",
+    "type": "Support",
+    "subtype": "For PLA",
+    "display_name": "Bambu Support For PLA"
+  },
+  {
+    "brand": "Bambu",
+    "type": "Support",
+    "subtype": "For PLA-PETG",
+    "display_name": "Bambu Support For PLA-PETG"
+  },
+  {
+    "brand": "Bambu",
+    "type": "Support",
+    "subtype": "G",
+    "display_name": "Bambu Support G"
+  },
+  {
+    "brand": "Bambu",
+    "type": "Support",
+    "subtype": "W",
+    "display_name": "Bambu Support W"
+  },
+  {
+    "brand": "Bambu",
+    "type": "TPU",
+    "subtype": "95A",
+    "display_name": "Bambu TPU 95A"
+  },
+  {
+    "brand": "Bambu",
+    "type": "TPU",
+    "subtype": "95A HF",
+    "display_name": "Bambu TPU 95A HF"
+  },
+  {
+    "brand": "eSUN",
+    "type": "ePLA-LW",
+    "subtype": "",
+    "display_name": "eSUN ePLA-LW"
+  },
+  {
+    "brand": "eSUN",
+    "type": "PETG",
+    "subtype": "",
+    "display_name": "eSUN PETG"
+  },
+  {
+    "brand": "eSUN",
+    "type": "PLA+",
+    "subtype": "",
+    "display_name": "eSUN PLA+"
+  },
+  {
+    "brand": "FDplast",
+    "type": "ABS",
+    "subtype": "",
+    "display_name": "FDplast ABS"
+  },
+  {
+    "brand": "FDplast",
+    "type": "HIPS",
+    "subtype": "",
+    "display_name": "FDplast HIPS"
+  },
+  {
+    "brand": "FDplast",
+    "type": "PETG",
+    "subtype": "",
+    "display_name": "FDplast PETG"
+  },
+  {
+    "brand": "FDplast",
+    "type": "PLA",
+    "subtype": "",
+    "display_name": "FDplast PLA"
+  },
+  {
+    "brand": "FDplast",
+    "type": "SBS",
+    "subtype": "",
+    "display_name": "FDplast SBS"
+  },
+  {
+    "brand": "FDplast",
+    "type": "TPU",
+    "subtype": "",
+    "display_name": "FDplast TPU"
+  },
+  {
+    "brand": "Fiberon",
+    "type": "PA12-CF",
+    "subtype": "",
+    "display_name": "Fiberon PA12-CF"
+  },
+  {
+    "brand": "Fiberon",
+    "type": "PA6-CF",
+    "subtype": "",
+    "display_name": "Fiberon PA6-CF"
+  },
+  {
+    "brand": "Fiberon",
+    "type": "PA6-GF",
+    "subtype": "",
+    "display_name": "Fiberon PA6-GF"
+  },
+  {
+    "brand": "Fiberon",
+    "type": "PA612-CF",
+    "subtype": "",
+    "display_name": "Fiberon PA612-CF"
+  },
+  {
+    "brand": "Fiberon",
+    "type": "PET-CF",
+    "subtype": "",
+    "display_name": "Fiberon PET-CF"
+  },
+  {
+    "brand": "Fiberon",
+    "type": "PETG-ESD",
+    "subtype": "",
+    "display_name": "Fiberon PETG-ESD"
+  },
+  {
+    "brand": "Fiberon",
+    "type": "PETG-rCF",
+    "subtype": "",
+    "display_name": "Fiberon PETG-rCF"
+  },
+  {
+    "brand": "FusRock",
+    "type": "ABS-GF",
+    "subtype": "",
+    "display_name": "FusRock ABS-GF"
+  },
+  {
+    "brand": "Generic",
+    "type": "ABS",
+    "subtype": "",
+    "display_name": "Generic ABS"
+  },
+  {
+    "brand": "Generic",
+    "type": "ASA",
+    "subtype": "",
+    "display_name": "Generic ASA"
+  },
+  {
+    "brand": "Generic",
+    "type": "BVOH",
+    "subtype": "",
+    "display_name": "Generic BVOH"
+  },
+  {
+    "brand": "Generic",
+    "type": "EVA",
+    "subtype": "",
+    "display_name": "Generic EVA"
+  },
+  {
+    "brand": "Generic",
+    "type": "HIPS",
+    "subtype": "",
+    "display_name": "Generic HIPS"
+  },
+  {
+    "brand": "Generic",
+    "type": "PA",
+    "subtype": "",
+    "display_name": "Generic PA"
+  },
+  {
+    "brand": "Generic",
+    "type": "PA-CF",
+    "subtype": "",
+    "display_name": "Generic PA-CF"
+  },
+  {
+    "brand": "Generic",
+    "type": "PC",
+    "subtype": "",
+    "display_name": "Generic PC"
+  },
+  {
+    "brand": "Generic",
+    "type": "PCTG",
+    "subtype": "",
+    "display_name": "Generic PCTG"
+  },
+  {
+    "brand": "Generic",
+    "type": "PE",
+    "subtype": "",
+    "display_name": "Generic PE"
+  },
+  {
+    "brand": "Generic",
+    "type": "PE-CF",
+    "subtype": "",
+    "display_name": "Generic PE-CF"
+  },
+  {
+    "brand": "Generic",
+    "type": "PETG",
+    "subtype": "",
+    "display_name": "Generic PETG"
+  },
+  {
+    "brand": "Generic",
+    "type": "PETG",
+    "subtype": "HF",
+    "display_name": "Generic PETG HF"
+  },
+  {
+    "brand": "Generic",
+    "type": "PETG-CF",
+    "subtype": "",
+    "display_name": "Generic PETG-CF"
+  },
+  {
+    "brand": "Generic",
+    "type": "PHA",
+    "subtype": "",
+    "display_name": "Generic PHA"
+  },
+  {
+    "brand": "Generic",
+    "type": "PLA",
+    "subtype": "",
+    "display_name": "Generic PLA"
+  },
+  {
+    "brand": "Generic",
+    "type": "PLA",
+    "subtype": "High Speed",
+    "display_name": "Generic PLA High Speed"
+  },
+  {
+    "brand": "Generic",
+    "type": "PLA",
+    "subtype": "Matte",
+    "display_name": "Generic PLA Matte"
+  },
+  {
+    "brand": "Generic",
+    "type": "PLA",
+    "subtype": "Silk",
+    "display_name": "Generic PLA Silk"
+  },
+  {
+    "brand": "Generic",
+    "type": "PLA-CF",
+    "subtype": "",
+    "display_name": "Generic PLA-CF"
+  },
+  {
+    "brand": "Generic",
+    "type": "PP",
+    "subtype": "",
+    "display_name": "Generic PP"
+  },
+  {
+    "brand": "Generic",
+    "type": "PP-CF",
+    "subtype": "",
+    "display_name": "Generic PP-CF"
+  },
+  {
+    "brand": "Generic",
+    "type": "PP-GF",
+    "subtype": "",
+    "display_name": "Generic PP-GF"
+  },
+  {
+    "brand": "Generic",
+    "type": "PPA-CF",
+    "subtype": "",
+    "display_name": "Generic PPA-CF"
+  },
+  {
+    "brand": "Generic",
+    "type": "PPA-GF",
+    "subtype": "",
+    "display_name": "Generic PPA-GF"
+  },
+  {
+    "brand": "Generic",
+    "type": "PVA",
+    "subtype": "",
+    "display_name": "Generic PVA"
+  },
+  {
+    "brand": "Generic",
+    "type": "SBS",
+    "subtype": "",
+    "display_name": "Generic SBS"
+  },
+  {
+    "brand": "Generic",
+    "type": "TPU",
+    "subtype": "",
+    "display_name": "Generic TPU"
+  },
+  {
+    "brand": "NIT",
+    "type": "ABS",
+    "subtype": "",
+    "display_name": "NIT ABS"
+  },
+  {
+    "brand": "NIT",
+    "type": "PETG",
+    "subtype": "",
+    "display_name": "NIT PETG"
+  },
+  {
+    "brand": "NIT",
+    "type": "PLA",
+    "subtype": "",
+    "display_name": "NIT PLA"
+  },
+  {
+    "brand": "Overture",
+    "type": "ABS",
+    "subtype": "Basic",
+    "display_name": "Overture ABS Basic"
+  },
+  {
+    "brand": "Overture",
+    "type": "Air",
+    "subtype": "PLA",
+    "display_name": "Overture Air PLA"
+  },
+  {
+    "brand": "Overture",
+    "type": "ASA",
+    "subtype": "",
+    "display_name": "Overture ASA"
+  },
+  {
+    "brand": "Overture",
+    "type": "Easy",
+    "subtype": "PLA",
+    "display_name": "Overture Easy PLA"
+  },
+  {
+    "brand": "Overture",
+    "type": "Matte",
+    "subtype": "PLA",
+    "display_name": "Overture Matte PLA"
+  },
+  {
+    "brand": "Overture",
+    "type": "PLA",
+    "subtype": "",
+    "display_name": "Overture PLA"
+  },
+  {
+    "brand": "Overture",
+    "type": "PLA",
+    "subtype": "Pro",
+    "display_name": "Overture PLA Pro"
+  },
+  {
+    "brand": "Overture",
+    "type": "Rock",
+    "subtype": "PLA",
+    "display_name": "Overture Rock PLA"
+  },
+  {
+    "brand": "Overture",
+    "type": "Silk",
+    "subtype": "PLA",
+    "display_name": "Overture Silk PLA"
+  },
+  {
+    "brand": "Overture",
+    "type": "Super",
+    "subtype": "PLA+",
+    "display_name": "Overture Super PLA+"
+  },
+  {
+    "brand": "Overture",
+    "type": "TPU",
+    "subtype": "",
+    "display_name": "Overture TPU"
+  },
+  {
+    "brand": "Panchroma",
+    "type": "CoPE",
+    "subtype": "",
+    "display_name": "Panchroma CoPE"
+  },
+  {
+    "brand": "Panchroma",
+    "type": "PLA",
+    "subtype": "",
+    "display_name": "Panchroma PLA"
+  },
+  {
+    "brand": "Panchroma",
+    "type": "PLA",
+    "subtype": "Celestial",
+    "display_name": "Panchroma PLA Celestial"
+  },
+  {
+    "brand": "Panchroma",
+    "type": "PLA",
+    "subtype": "Galaxy",
+    "display_name": "Panchroma PLA Galaxy"
+  },
+  {
+    "brand": "Panchroma",
+    "type": "PLA",
+    "subtype": "Glow",
+    "display_name": "Panchroma PLA Glow"
+  },
+  {
+    "brand": "Panchroma",
+    "type": "PLA",
+    "subtype": "Luminous",
+    "display_name": "Panchroma PLA Luminous"
+  },
+  {
+    "brand": "Panchroma",
+    "type": "PLA",
+    "subtype": "Marble",
+    "display_name": "Panchroma PLA Marble"
+  },
+  {
+    "brand": "Panchroma",
+    "type": "PLA",
+    "subtype": "Matte",
+    "display_name": "Panchroma PLA Matte"
+  },
+  {
+    "brand": "Panchroma",
+    "type": "PLA",
+    "subtype": "Metallic",
+    "display_name": "Panchroma PLA Metallic"
+  },
+  {
+    "brand": "Panchroma",
+    "type": "PLA",
+    "subtype": "Neon",
+    "display_name": "Panchroma PLA Neon"
+  },
+  {
+    "brand": "Panchroma",
+    "type": "PLA",
+    "subtype": "Silk",
+    "display_name": "Panchroma PLA Silk"
+  },
+  {
+    "brand": "Panchroma",
+    "type": "PLA",
+    "subtype": "Stain",
+    "display_name": "Panchroma PLA Stain"
+  },
+  {
+    "brand": "Panchroma",
+    "type": "PLA",
+    "subtype": "Starlight",
+    "display_name": "Panchroma PLA Starlight"
+  },
+  {
+    "brand": "Panchroma",
+    "type": "PLA",
+    "subtype": "Temp Shift",
+    "display_name": "Panchroma PLA Temp Shift"
+  },
+  {
+    "brand": "Panchroma",
+    "type": "PLA",
+    "subtype": "Translucent",
+    "display_name": "Panchroma PLA Translucent"
+  },
+  {
+    "brand": "Panchroma",
+    "type": "PLA",
+    "subtype": "UV Shift",
+    "display_name": "Panchroma PLA UV Shift"
+  },
+  {
+    "brand": "PolyLite",
+    "type": "ABS",
+    "subtype": "",
+    "display_name": "PolyLite ABS"
+  },
+  {
+    "brand": "PolyLite",
+    "type": "ASA",
+    "subtype": "",
+    "display_name": "PolyLite ASA"
+  },
+  {
+    "brand": "PolyLite",
+    "type": "Dual",
+    "subtype": "PLA",
+    "display_name": "PolyLite Dual PLA"
+  },
+  {
+    "brand": "PolyLite",
+    "type": "PETG",
+    "subtype": "",
+    "display_name": "PolyLite PETG"
+  },
+  {
+    "brand": "PolyLite",
+    "type": "PLA",
+    "subtype": "",
+    "display_name": "PolyLite PLA"
+  },
+  {
+    "brand": "PolyLite",
+    "type": "PLA",
+    "subtype": "Pro",
+    "display_name": "PolyLite PLA Pro"
+  },
+  {
+    "brand": "Polymaker",
+    "type": "HT-PLA",
+    "subtype": "",
+    "display_name": "Polymaker HT-PLA"
+  },
+  {
+    "brand": "Polymaker",
+    "type": "HT-PLA-GF",
+    "subtype": "",
+    "display_name": "Polymaker HT-PLA-GF"
+  },
+  {
+    "brand": "PolyTerra",
+    "type": "Dual",
+    "subtype": "PLA",
+    "display_name": "PolyTerra Dual PLA"
+  },
+  {
+    "brand": "PolyTerra",
+    "type": "PLA",
+    "subtype": "",
+    "display_name": "PolyTerra PLA"
+  },
+  {
+    "brand": "SUNLU",
+    "type": "Marble",
+    "subtype": "PLA",
+    "display_name": "SUNLU Marble PLA"
+  },
+  {
+    "brand": "SUNLU",
+    "type": "PETG",
+    "subtype": "",
+    "display_name": "SUNLU PETG"
+  },
+  {
+    "brand": "SUNLU",
+    "type": "PLA",
+    "subtype": "Matte",
+    "display_name": "SUNLU PLA Matte"
+  },
+  {
+    "brand": "SUNLU",
+    "type": "PLA+",
+    "subtype": "",
+    "display_name": "SUNLU PLA+"
+  },
+  {
+    "brand": "SUNLU",
+    "type": "PLA+",
+    "subtype": "2.0",
+    "display_name": "SUNLU PLA+ 2.0"
+  },
+  {
+    "brand": "SUNLU",
+    "type": "Silk",
+    "subtype": "PLA+",
+    "display_name": "SUNLU Silk PLA+"
+  },
+  {
+    "brand": "SUNLU",
+    "type": "Wood",
+    "subtype": "PLA",
+    "display_name": "SUNLU Wood PLA"
+  },
+  {
+    "brand": "Valment",
+    "type": "PLA",
+    "subtype": "",
+    "display_name": "Valment PLA"
+  },
+  {
+    "brand": "Valment",
+    "type": "PLA",
+    "subtype": "Galaxy",
+    "display_name": "Valment PLA Galaxy"
+  },
+  {
+    "brand": "Valment",
+    "type": "PLA",
+    "subtype": "Silk",
+    "display_name": "Valment PLA Silk"
+  },
+  {
+    "brand": "Valment",
+    "type": "PLA-CF",
+    "subtype": "",
+    "display_name": "Valment PLA-CF"
+  }
+]

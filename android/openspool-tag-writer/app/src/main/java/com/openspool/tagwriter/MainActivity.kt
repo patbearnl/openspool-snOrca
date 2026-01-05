@@ -29,6 +29,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -39,6 +40,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -149,6 +151,9 @@ private fun App(
     onRegisterColorPickedListener: ((String) -> Unit) -> Unit,
     nfcAvailable: Boolean,
 ) {
+    val context = LocalContext.current
+    val allPresets = remember { PresetRepository.loadPresets(context) }
+
     var brand by remember { mutableStateOf("Generic") }
     var type by remember { mutableStateOf("PLA") }
     var subtype by remember { mutableStateOf("") }
@@ -168,6 +173,7 @@ private fun App(
 
     var nfcMode by remember { mutableStateOf(NfcMode.WRITE) }
     var isArmed by remember { mutableStateOf(false) }
+    var presetDialogOpen by remember { mutableStateOf(false) }
 
     fun rebuildPayload() {
         val minTemp = minTempText.toIntOrNull() ?: 0
@@ -269,6 +275,26 @@ private fun App(
                         .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
+                        Button(
+                            onClick = { presetDialogOpen = true },
+                            modifier = Modifier.weight(1f),
+                        ) {
+                            Text("Choose preset")
+                        }
+                        Button(
+                            onClick = {
+                                brand = "Generic"
+                                type = "PLA"
+                                subtype = ""
+                                rebuildPayload()
+                            },
+                            modifier = Modifier.weight(1f),
+                        ) {
+                            Text("Generic PLA")
+                        }
+                    }
+
                     Text(
                         text =
                             if (!nfcAvailable) {
@@ -458,5 +484,72 @@ private fun App(
             }
         }
     }
+
+    if (presetDialogOpen) {
+        PresetPickerDialog(
+            presets = allPresets,
+            onDismiss = { presetDialogOpen = false },
+            onPick = { preset ->
+                presetDialogOpen = false
+                brand = preset.brand
+                type = preset.type
+                subtype = preset.subtype
+                rebuildPayload()
+            },
+        )
+    }
 }
 
+@Composable
+private fun PresetPickerDialog(
+    presets: List<Preset>,
+    onDismiss: () -> Unit,
+    onPick: (Preset) -> Unit,
+) {
+    var query by remember { mutableStateOf("") }
+
+    val filtered =
+        remember(presets, query) {
+            val q = query.trim().lowercase()
+            if (q.isEmpty()) presets
+            else presets.filter { it.displayName.lowercase().contains(q) }
+        }
+
+    androidx.compose.material3.AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Choose preset") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(
+                    value = query,
+                    onValueChange = { query = it },
+                    label = { Text("Search") },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(360.dp)
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
+                    if (filtered.isEmpty()) {
+                        Text("No matches.")
+                    } else {
+                        filtered.forEach { preset ->
+                            TextButton(
+                                onClick = { onPick(preset) },
+                                modifier = Modifier.fillMaxWidth(),
+                            ) {
+                                Text(preset.displayName, modifier = Modifier.fillMaxWidth())
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) { Text("Close") }
+        },
+    )
+}
