@@ -1463,55 +1463,72 @@ void SSWCP_Instance::update_filament_info(const json& objects, bool send_message
 
                     auto resolve_filament_preset_name = [&](const std::string &vendor_in, const std::string &type_in,
                                                            const std::string &sub_type_in) -> std::string {
-                        std::string normalized_sub_type = sub_type_in;
-                        if (normalized_sub_type == "NONE")
-                            normalized_sub_type.clear();
+                        auto try_match = [&](const std::string &vendor_name) -> std::string {
+                            std::string normalized_sub_type = sub_type_in;
+                            if (normalized_sub_type == "NONE")
+                                normalized_sub_type.clear();
 
-                        // Snapmaker's built-in Generic profiles usually omit "Basic" in the preset name.
-                        // The device may still report "Basic" as a subtype (e.g. Generic PLA Basic).
-                        if (vendor_in == "Generic" && normalized_sub_type == "Basic")
-                            normalized_sub_type.clear();
+                            std::vector<std::string> candidates;
+                            candidates.reserve(4);
 
-                        std::vector<std::string> candidates;
-                        candidates.reserve(3);
+                            // Snapmaker's built-in Generic profiles usually omit "Basic" in the preset name,
+                            // but some user libraries may still define explicit "Basic" presets.
+                            // Try both: with Basic first, then without.
+                            if (vendor_name == "Generic" && normalized_sub_type == "Basic") {
+                                candidates.emplace_back(vendor_name + " " + type_in + " " + normalized_sub_type);
+                                normalized_sub_type.clear();
+                            }
 
-                        if (type_in == "TPU") {
-                            candidates.emplace_back(vendor_in + " " + type_in);
-                        } else if (normalized_sub_type == "Support") {
-                            candidates.emplace_back(vendor_in + " Support" + " For " + type_in);
-                        } else {
-                            std::string base = vendor_in + " " + type_in;
-                            if (!normalized_sub_type.empty())
-                                base += " " + normalized_sub_type;
-                            candidates.emplace_back(std::move(base));
+                            if (type_in == "TPU") {
+                                candidates.emplace_back(vendor_name + " " + type_in);
+                            } else if (normalized_sub_type == "Support") {
+                                candidates.emplace_back(vendor_name + " Support" + " For " + type_in);
+                            } else {
+                                std::string base = vendor_name + " " + type_in;
+                                if (!normalized_sub_type.empty())
+                                    base += " " + normalized_sub_type;
+                                candidates.emplace_back(std::move(base));
+                            }
+
+                            // Fallback: try without subtype.
+                            candidates.emplace_back(vendor_name + " " + type_in);
+
+                            // Also try the reported subtype verbatim (in case of different casing/normalization).
+                            if (sub_type_in != "NONE" && !sub_type_in.empty() && sub_type_in != normalized_sub_type)
+                                candidates.emplace_back(vendor_name + " " + type_in + " " + sub_type_in);
+
+                            // De-duplicate while keeping order.
+                            std::vector<std::string> unique;
+                            unique.reserve(candidates.size());
+                            for (const auto &c : candidates) {
+                                if (c.empty())
+                                    continue;
+                                if (std::find(unique.begin(), unique.end(), c) == unique.end())
+                                    unique.push_back(c);
+                            }
+
+                            for (const auto &candidate : unique) {
+                                if (wxGetApp().preset_bundle->filaments.find_preset(candidate, false) != nullptr)
+                                    return candidate;
+                                if (wxGetApp().preset_bundle->filaments.find_preset(candidate + " @U1", false) != nullptr)
+                                    return candidate;
+                            }
+
+                            return {};
+                        };
+
+                        // 1) Try matching the reported vendor.
+                        if (auto matched = try_match(vendor_in); !matched.empty())
+                            return matched;
+
+                        // 2) Vendor fallback: if vendor is unknown, try Generic for the same type/subtype.
+                        if (vendor_in != "Generic") {
+                            if (auto matched = try_match("Generic"); !matched.empty())
+                                return matched;
                         }
 
-                        // Fallback: try without subtype.
-                        candidates.emplace_back(vendor_in + " " + type_in);
-
-                        // Also try the reported subtype verbatim (in case of different casing/normalization).
-                        if (sub_type_in != "NONE" && !sub_type_in.empty() && sub_type_in != normalized_sub_type)
-                            candidates.emplace_back(vendor_in + " " + type_in + " " + sub_type_in);
-
-                        // De-duplicate while keeping order.
-                        std::vector<std::string> unique;
-                        unique.reserve(candidates.size());
-                        for (const auto &c : candidates) {
-                            if (c.empty())
-                                continue;
-                            if (std::find(unique.begin(), unique.end(), c) == unique.end())
-                                unique.push_back(c);
-                        }
-
-                        for (const auto &candidate : unique) {
-                            if (wxGetApp().preset_bundle->filaments.find_preset(candidate, false) != nullptr)
-                                return candidate;
-                            if (wxGetApp().preset_bundle->filaments.find_preset(candidate + " @U1", false) != nullptr)
-                                return candidate;
-                        }
-
-                        // No matching preset found; keep the computed candidate so downstream code can decide.
-                        return unique.empty() ? std::string{} : unique.front();
+                        // No usable preset found.
+                        return {};
                     };
 
                     std::string name = resolve_filament_preset_name(vendor, type, sub_type);
