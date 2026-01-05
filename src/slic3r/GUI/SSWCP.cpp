@@ -6,6 +6,7 @@
 #include "slic3r/GUI/Tab.hpp"
 #include "sentry_wrapper/SentryWrapper.hpp"
 #include <algorithm>
+#include <vector>
 #include <iterator>
 #include <exception>
 #include <cstdlib>
@@ -1460,16 +1461,65 @@ void SSWCP_Instance::update_filament_info(const json& objects, bool send_message
                     std::string type     = j_value["filament_type"][i].get<std::string>();
                     std::string sub_type = j_value["filament_sub_type"][i].get<std::string>();
 
-                    std::string name = "";
+                    auto resolve_filament_preset_name = [&](const std::string &vendor_in, const std::string &type_in,
+                                                           const std::string &sub_type_in) -> std::string {
+                        std::string normalized_sub_type = sub_type_in;
+                        if (normalized_sub_type == "NONE")
+                            normalized_sub_type.clear();
+
+                        // Snapmaker's built-in Generic profiles usually omit "Basic" in the preset name.
+                        // The device may still report "Basic" as a subtype (e.g. Generic PLA Basic).
+                        if (vendor_in == "Generic" && normalized_sub_type == "Basic")
+                            normalized_sub_type.clear();
+
+                        std::vector<std::string> candidates;
+                        candidates.reserve(3);
+
+                        if (type_in == "TPU") {
+                            candidates.emplace_back(vendor_in + " " + type_in);
+                        } else if (normalized_sub_type == "Support") {
+                            candidates.emplace_back(vendor_in + " Support" + " For " + type_in);
+                        } else {
+                            std::string base = vendor_in + " " + type_in;
+                            if (!normalized_sub_type.empty())
+                                base += " " + normalized_sub_type;
+                            candidates.emplace_back(std::move(base));
+                        }
+
+                        // Fallback: try without subtype.
+                        candidates.emplace_back(vendor_in + " " + type_in);
+
+                        // Also try the reported subtype verbatim (in case of different casing/normalization).
+                        if (sub_type_in != "NONE" && !sub_type_in.empty() && sub_type_in != normalized_sub_type)
+                            candidates.emplace_back(vendor_in + " " + type_in + " " + sub_type_in);
+
+                        // De-duplicate while keeping order.
+                        std::vector<std::string> unique;
+                        unique.reserve(candidates.size());
+                        for (const auto &c : candidates) {
+                            if (c.empty())
+                                continue;
+                            if (std::find(unique.begin(), unique.end(), c) == unique.end())
+                                unique.push_back(c);
+                        }
+
+                        for (const auto &candidate : unique) {
+                            if (wxGetApp().preset_bundle->filaments.find_preset(candidate, false) != nullptr)
+                                return candidate;
+                            if (wxGetApp().preset_bundle->filaments.find_preset(candidate + " @U1", false) != nullptr)
+                                return candidate;
+                        }
+
+                        // No matching preset found; keep the computed candidate so downstream code can decide.
+                        return unique.empty() ? std::string{} : unique.front();
+                    };
+
+                    std::string name = resolve_filament_preset_name(vendor, type, sub_type);
+                    if (name.empty())
+                        continue;
 
                     // 名称特殊处理
-                    if (type == "TPU") {
-                        name = vendor + " " + type;
-                    } else if (sub_type == "Support") {
-                        name = vendor + " Support" + " For " + type;
-                    } else {
-                        name = vendor + " " + type + ((sub_type != "NONE" && sub_type != "") ? " " + sub_type : "");
-                    }
+                    // name resolved above
 
                     int extruder = j_value["extruder_map_table"][i].get<int>();
 
