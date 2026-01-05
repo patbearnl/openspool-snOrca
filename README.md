@@ -45,8 +45,6 @@ Releases (Windows installer / portable builds) are published here:
 
 If this project helps, you can support development:
 
-- Buy me a coffee: https://buymeacoffee.com/patjewaalv
-
 [![Buy me a coffee](https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=&slug=patjewaalv&button_colour=5F7FFF&font_colour=ffffff&font_family=Bree&outline_colour=000000&coffee_colour=FFDD00)](https://buymeacoffee.com/patjewaalv)
 
 ## Android tag writer
@@ -95,4 +93,5 @@ See `LICENSE.txt`.
 - OrcaSlicer / Bambu Studio / PrusaSlicer / Slic3r
 - OpenSpool protocol community
 - paxx12 for being the first with Snapmaker U1 custom firmware
+
 
