@@ -943,6 +943,13 @@ set (CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/resources/images\\\\snorca_openspoo
 set (CPACK_NSIS_MUI_ICON "${CPACK_PACKAGE_ICON}")
 set (CPACK_NSIS_MUI_UNIICON "${CPACK_PACKAGE_ICON}")
 set (CPACK_NSIS_INSTALLED_ICON_NAME  "$INSTDIR\\\\snorca-openspool.exe")
+set (CPACK_NSIS_DEFINES "
+    !define MUI_CUSTOMFUNCTION_GUIINIT snorcaGuiInit
+
+    Function snorcaGuiInit
+        StrCpy $LANGUAGE \\\${LANG_ENGLISH}
+    FunctionEnd
+")
 set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
     CreateShortCut \\\"$DESKTOP\\\\snOrca OpenSpool.lnk\\\" \\\"$INSTDIR\\\\snorca-openspool.exe\\\"
 ")
