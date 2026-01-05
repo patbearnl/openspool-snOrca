@@ -939,7 +939,7 @@ set (CPACK_PACKAGE_FILE_NAME "snOrca_OpenSpool_Windows_Installer_V${Snapmaker_VE
 set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "snOrca OpenSpool is a community fork of Snapmaker Orca with OpenSpool tag support")
 set (CPACK_PACKAGE_HOMEPAGE_URL "https://github.com/patbearnl/openspool-snOrca")
 set (CPACK_PACKAGE_INSTALL_DIRECTORY ${CPACK_PACKAGE_NAME})
-set (CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/resources/images\\\\Snapmaker_Orca.ico")
+set (CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/resources/images\\\\snorca_openspool.ico")
 set (CPACK_NSIS_MUI_ICON "${CPACK_PACKAGE_ICON}")
 set (CPACK_NSIS_MUI_UNIICON "${CPACK_PACKAGE_ICON}")
 set (CPACK_NSIS_INSTALLED_ICON_NAME  "$INSTDIR\\\\snorca-openspool.exe")
