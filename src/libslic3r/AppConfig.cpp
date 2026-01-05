@@ -37,8 +37,9 @@ using namespace nlohmann;
 
 namespace Slic3r {
 
-static const std::string VERSION_CHECK_URL_STABLE = "https://api.github.com/repos/Snapmaker/OrcaSlicer/releases/latest";
-static const std::string VERSION_CHECK_URL = "https://api.github.com/repos/Snapmaker/OrcaSlicer/releases";
+// OpenSpool fork: point update checks at our fork releases (instead of upstream Snapmaker repo).
+static const std::string VERSION_CHECK_URL_STABLE = "https://api.github.com/repos/patbearnl/openspool-snOrca/releases/latest";
+static const std::string VERSION_CHECK_URL = "https://api.github.com/repos/patbearnl/openspool-snOrca/releases";
 static const std::string PROFILE_UPDATE_URL = "https://api.github.com/repos/Snapmaker/Orca_Presets/releases/latest";
 static const std::string MODELS_STR = "models";
 

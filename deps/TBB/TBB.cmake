@@ -1,7 +1,10 @@
 if (FLATPAK)
-    set(_patch_command ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/GNU.cmake ./cmake/compilers/GNU.cmake)
+    set(_patch_command
+        ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/GNU.cmake ./cmake/compilers/GNU.cmake
+        COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_LIST_DIR}/patch_cmake_minimum_required.cmake
+    )
 else()
-    set(_patch_command "")
+    set(_patch_command ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_LIST_DIR}/patch_cmake_minimum_required.cmake)
 endif()
 
 Snapmaker_Orca_add_cmake_project(

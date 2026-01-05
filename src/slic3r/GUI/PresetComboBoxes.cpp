@@ -448,15 +448,45 @@ void PresetComboBox::add_ams_filaments(std::string selected, bool alias_name)
         for (auto &entry : m_preset_bundle->filament_ams_list) {
             auto &      tray        = entry.second;
             std::string filament_id = tray.opt_string("filament_id", 0u);
-            if (filament_id.empty()) continue;
+            const std::string filament_type   = tray.opt_string("filament_type", 0u);
+            const std::string filament_vendor = tray.opt_string("filament_vendor", 0u);
+            const std::string filament_subtype = tray.opt_string("filament_subtype", 0u);
+            const std::string filament_serial  = tray.opt_string("filament_serial", 0u);
+
+            if (filament_id.empty() && filament_type.empty()) continue;
+
             auto iter = std::find_if(filaments.begin(), filaments.end(),
                 [&filament_id, this](auto &f) { return f.is_compatible && m_collection->get_preset_base(f) == &f && f.filament_id == filament_id; });
+
+            // OpenSpool / third-party tags may not provide a filament_id that maps to a system preset.
+            // Try resolving by "Vendor Type Subtype" naming (or fallback to Generic) before dropping to loose matching.
+            if (iter == filaments.end() && !filament_vendor.empty() && !filament_type.empty()) {
+                auto resolve_by_name = [&](const std::string& vendor_name) {
+                    if (vendor_name.empty()) return filaments.end();
+                    std::string type_full = filament_type;
+                    const std::string suffix = !filament_subtype.empty() ? filament_subtype : filament_serial;
+                    if (!suffix.empty() && !boost::algorithm::contains(type_full, suffix))
+                        type_full += " " + suffix;
+
+                    const std::string wanted = vendor_name + " " + type_full;
+                    return std::find_if(filaments.begin(), filaments.end(), [&](auto &f) {
+                        if (!f.is_compatible || m_collection->get_preset_base(f) != &f)
+                            return false;
+                        if (f.name == wanted)
+                            return true;
+                        return boost::algorithm::starts_with(f.name, wanted + " @");
+                    });
+                };
+
+                iter = resolve_by_name(filament_vendor);
+                if (iter == filaments.end())
+                    iter = resolve_by_name("Generic");
+            }
             if (iter == filaments.end()) {
-                auto filament_type = tray.opt_string("filament_type", 0u);
                 if (!filament_type.empty()) {
-                    filament_type = "Generic " + filament_type;
+                    auto filament_type_prefix = "Generic " + filament_type;
                     iter          = std::find_if(filaments.begin(), filaments.end(),
-                                        [&filament_type](auto &f) { return f.is_compatible && f.is_system && boost::algorithm::starts_with(f.name, filament_type); });
+                                        [&filament_type_prefix](auto &f) { return f.is_compatible && f.is_system && boost::algorithm::starts_with(f.name, filament_type_prefix); });
                 }
             }
             if (iter == filaments.end()) {

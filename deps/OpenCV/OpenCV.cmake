@@ -1,8 +1,12 @@
-if (MSVC)
-    set(_use_IPP "-DWITH_IPP=ON")
-else ()
-    set(_use_IPP "-DWITH_IPP=OFF")
-endif ()
+# NOTE: OpenCV's IPP (ippicv) download/extract has been observed to fail under newer CMake/libarchive
+# with errors like "Can't restore time" while unpacking. Disable it for reproducible builds.
+# IMPORTANT: This must be a CMake list (semicolon-separated), not a single space-delimited string,
+# otherwise it becomes one invalid -D argument.
+set(_use_IPP
+    -DWITH_IPP=OFF
+    -DOPENCV_ENABLE_IPP=OFF
+    -DOPENCV_DOWNLOAD_IPPICV=OFF
+)
 
 if (IN_GIT_REPO)
     set(OpenCV_DIRECTORY_FLAG --directory ${BINARY_DIR_REL}/dep_OpenCV-prefix/src/dep_OpenCV)

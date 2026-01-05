@@ -26,6 +26,7 @@ Snapmaker_Orca_add_cmake_project(
     wxWidgets
     GIT_REPOSITORY "https://github.com/SoftFever/Orca-deps-wxWidgets"
     GIT_SHALLOW ON
+    PATCH_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_LIST_DIR}/patch_cotire_test_cmake_minimum_required.cmake
     DEPENDS ${PNG_PKG} ${ZLIB_PKG} ${EXPAT_PKG} ${JPEG_PKG}
     CMAKE_ARGS
         -DwxBUILD_PRECOMP=ON

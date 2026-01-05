@@ -215,11 +215,7 @@ if (WIN32)
             file(TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CONF}" WIN_CONF_OUTPUT_DIR)
             file(TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CONF}/resources" WIN_RESOURCES_SYMLINK)
             add_custom_command(TARGET Snapmaker_Orca POST_BUILD
-                COMMAND if exist "${WIN_CONF_OUTPUT_DIR}" "("
-                        if not exist "${WIN_RESOURCES_SYMLINK}" "("
-                            mklink /J "${WIN_RESOURCES_SYMLINK}" "${SLIC3R_RESOURCES_DIR_WIN}"
-                        ")"
-                    ")"
+                COMMAND cmd /c "if exist \"${WIN_CONF_OUTPUT_DIR}\" ( if not exist \"${WIN_RESOURCES_SYMLINK}\" ( mklink /J \"${WIN_RESOURCES_SYMLINK}\" \"${SLIC3R_RESOURCES_DIR_WIN}\" >nul 2>nul || \"${CMAKE_COMMAND}\" -E copy_directory \"${SLIC3R_RESOURCES_DIR_WIN}\" \"${WIN_RESOURCES_SYMLINK}\" ) )"
                 COMMENT "Symlinking the resources directory into the build tree"
                 VERBATIM
             )
@@ -242,7 +238,7 @@ if (WIN32)
         # Single-config generators (Ninja, Makefiles)
         file(TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/resources" WIN_RESOURCES_SYMLINK)
         add_custom_command(TARGET Snapmaker_Orca POST_BUILD
-            COMMAND if not exist "${WIN_RESOURCES_SYMLINK}" "(" mklink /J "${WIN_RESOURCES_SYMLINK}" "${SLIC3R_RESOURCES_DIR_WIN}" ")"
+            COMMAND cmd /c "if not exist \"${WIN_RESOURCES_SYMLINK}\" ( mklink /J \"${WIN_RESOURCES_SYMLINK}\" \"${SLIC3R_RESOURCES_DIR_WIN}\" >nul 2>nul || \"${CMAKE_COMMAND}\" -E copy_directory \"${SLIC3R_RESOURCES_DIR_WIN}\" \"${WIN_RESOURCES_SYMLINK}\" )"
             COMMENT "Symlinking the resources directory into the build tree"
             VERBATIM
         )

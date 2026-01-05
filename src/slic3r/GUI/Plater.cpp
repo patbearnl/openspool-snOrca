@@ -2304,6 +2304,7 @@ std::map<int, DynamicPrintConfig> Sidebar::build_filament_ams_list(MachineObject
         vt_tray_config.set_key_value("filament_id", new ConfigOptionStrings{ vt_tray.setting_id });
         vt_tray_config.set_key_value("tag_uid", new ConfigOptionStrings{ vt_tray.tag_uid });
         vt_tray_config.set_key_value("filament_type", new ConfigOptionStrings{ vt_tray.type });
+        vt_tray_config.set_key_value("filament_vendor", new ConfigOptionStrings{ vt_tray.sub_brands });
         vt_tray_config.set_key_value("tray_name", new ConfigOptionStrings{ std::string("Ext") });
         vt_tray_config.set_key_value("filament_colour", new ConfigOptionStrings{ into_u8(wxColour("#" + vt_tray.color).GetAsString(wxC2S_HTML_SYNTAX)) });
         vt_tray_config.set_key_value("filament_exist", new ConfigOptionBools{ true });
@@ -2326,6 +2327,7 @@ std::map<int, DynamicPrintConfig> Sidebar::build_filament_ams_list(MachineObject
             tray_config.set_key_value("filament_id", new ConfigOptionStrings{ tray.second->setting_id });
             tray_config.set_key_value("tag_uid", new ConfigOptionStrings{ tray.second->tag_uid });
             tray_config.set_key_value("filament_type", new ConfigOptionStrings{ tray.second->type });
+            tray_config.set_key_value("filament_vendor", new ConfigOptionStrings{ tray.second->sub_brands });
             tray_config.set_key_value("tray_name", new ConfigOptionStrings{ std::string(1, n) + std::string(1, t) });
             tray_config.set_key_value("filament_colour", new ConfigOptionStrings{ into_u8(wxColour("#" + tray.second->color).GetAsString(wxC2S_HTML_SYNTAX)) });
             tray_config.set_key_value("filament_exist", new ConfigOptionBools{ tray.second->is_exists });
