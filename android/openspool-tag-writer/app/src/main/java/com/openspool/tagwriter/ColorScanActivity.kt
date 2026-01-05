@@ -22,6 +22,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -78,65 +80,70 @@ class ColorScanActivity : ComponentActivity() {
         var hex by remember { mutableStateOf("#FFFFFF") }
         var previewColor by remember { mutableStateOf(Color.White) }
 
-        Column(modifier = Modifier.fillMaxSize()) {
-            Box(modifier = Modifier.weight(1f)) {
-                AndroidView(
-                    modifier = Modifier.fillMaxSize(),
-                    factory = { ctx ->
-                        val previewView = PreviewView(ctx)
-                        startCamera(
-                            previewView = previewView,
-                            onColor = { r, g, b ->
-                                val h = ColorUtils.rgbToHex(r, g, b)
-                                hex = h
-                                previewColor = Color(r, g, b)
-                            },
-                        )
-                        previewView
-                    },
-                )
+        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Box(modifier = Modifier.weight(1f)) {
+                    AndroidView(
+                        modifier = Modifier.fillMaxSize(),
+                        factory = { ctx ->
+                            val previewView = PreviewView(ctx)
+                            startCamera(
+                                previewView = previewView,
+                                onColor = { r, g, b ->
+                                    val h = ColorUtils.rgbToHex(r, g, b)
+                                    hex = h
+                                    previewColor = Color(r, g, b)
+                                },
+                            )
+                            previewView
+                        },
+                    )
 
-                // Simple center reticle.
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .size(90.dp),
-                ) {
                     Box(
                         modifier = Modifier
                             .align(Alignment.Center)
-                            .size(2.dp)
-                            .background(Color.White),
-                    )
+                            .size(90.dp),
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .size(2.dp)
+                                .background(Color.White),
+                        )
+                    }
                 }
-            }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Box(modifier = Modifier.size(32.dp).background(previewColor))
-                Text(text = hex, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
-                Button(onClick = { onDone(hex) }) { Text("Use") }
-                Button(onClick = onCancel) { Text("Back") }
+                Surface(color = MaterialTheme.colorScheme.surface) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Box(modifier = Modifier.size(32.dp).background(previewColor))
+                        Text(text = hex, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
+                        Button(onClick = { onDone(hex) }) { Text("Use") }
+                        Button(onClick = onCancel) { Text("Back") }
+                    }
+                }
             }
         }
     }
 
     @Composable
     private fun PermissionDenied(onCancel: () -> Unit) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Text("Camera permission denied.", style = MaterialTheme.typography.titleMedium)
-            Text("Enable the camera permission to use the color scanner.")
-            Button(onClick = onCancel) { Text("Back") }
+        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Text("Camera permission denied.", style = MaterialTheme.typography.titleMedium)
+                Text("Enable the camera permission to use the color scanner.")
+                Button(onClick = onCancel) { Text("Back") }
+            }
         }
     }
 
@@ -150,9 +157,10 @@ class ColorScanActivity : ComponentActivity() {
                     it.setSurfaceProvider(previewView.surfaceProvider)
                 }
 
-                val analysis = ImageAnalysis.Builder()
-                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                    .build()
+                val analysis =
+                    ImageAnalysis.Builder()
+                        .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                        .build()
 
                 analysis.setAnalyzer(analysisExecutor) { image ->
                     val rgb = YuvColorSampler.sampleCenterAverageRgb(image, radiusPx = 12)
@@ -167,3 +175,4 @@ class ColorScanActivity : ComponentActivity() {
         )
     }
 }
+
