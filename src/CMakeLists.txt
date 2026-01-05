@@ -128,8 +128,8 @@ endif (MINGW)
 
 if (NOT WIN32 AND NOT APPLE)
     # Binary name on unix like systems (Linux, Unix)
-    set_target_properties(Snapmaker_Orca PROPERTIES OUTPUT_NAME "snapmaker-orca")
-    set(SLIC3R_APP_CMD "snapmaker-orca")
+    set_target_properties(Snapmaker_Orca PROPERTIES OUTPUT_NAME "snorca-openspool")
+    set(SLIC3R_APP_CMD "snorca-openspool")
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/dev-utils/platform/unix/build_linux_image.sh.in ${CMAKE_CURRENT_BINARY_DIR}/build_linux_image.sh USE_SOURCE_PERMISSIONS @ONLY)
 endif ()
 
@@ -190,7 +190,7 @@ if (WIN32)
     endif()
     target_compile_definitions(Snapmaker_Orca_app_gui PRIVATE -DSLIC3R_WRAPPER_NOCONSOLE)
     add_dependencies(Snapmaker_Orca_app_gui Snapmaker_Orca)
-    set_target_properties(Snapmaker_Orca_app_gui PROPERTIES OUTPUT_NAME "snapmaker-orca")
+    set_target_properties(Snapmaker_Orca_app_gui PROPERTIES OUTPUT_NAME "snorca-openspool")
     
     if (SLIC3R_SENTRY)
         target_link_libraries(Snapmaker_Orca_app_gui PRIVATE boost_headeronly sentry::sentry nlohmann_json Snapmaker_Orca)
@@ -255,7 +255,7 @@ else ()
     if (APPLE AND NOT CMAKE_MACOSX_BUNDLE)
         # On OSX, the name of the binary matches the name of the Application.
         add_custom_command(TARGET Snapmaker_Orca POST_BUILD
-            COMMAND ln -sf Snapmaker_Orca snapmaker-orca
+            COMMAND ln -sf Snapmaker_Orca snorca-openspool
             WORKING_DIRECTORY "$<TARGET_FILE_DIR:Snapmaker_Orca>"
             VERBATIM)
         # Copy Sentry crashpad_handler to executable directory for non-bundle builds (e.g., Xcode debugging)
@@ -288,7 +288,7 @@ else ()
         set(MACOSX_BUNDLE_ICON_FILE Icon.icns)
         set_target_properties(Snapmaker_Orca PROPERTIES
             MACOSX_BUNDLE TRUE
-            MACOSX_BUNDLE_BUNDLE_NAME "Snapmaker Orca"
+            MACOSX_BUNDLE_BUNDLE_NAME "snOrca OpenSpool"
             MACOSX_BUNDLE_SHORT_VERSION_STRING ${Snapmaker_VERSION}
             MACOSX_BUNDLE_COPYRIGHT "Copyright © 2024-2026 Snapmaker. All rights reserved.")
         # Get the bundle directory by going up from the executable to the .app bundle
