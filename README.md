@@ -58,9 +58,11 @@ An Android app is included to read/write OpenSpool JSON onto NFC tags.
 
 OpenSpool JSON fields:
 - Required: `protocol`, `version`, `brand`, `type`, `color_hex`
-- Optional: `subtype`, `min_temp`, `max_temp`, `bed_min_temp`, `bed_max_temp`\n## Windows install notes
+- Optional: `subtype`, `min_temp`, `max_temp`, `bed_min_temp`, `bed_max_temp`
 
-If the app won't start, install these prerequisites:
+## Windows install notes
+
+If the Windows app won't start, install these prerequisites:
 
 - Microsoft WebView2 Runtime: `https://aka.ms/webview2`
 - MSVC x64 Redistributable: `https://aka.ms/vs/17/release/vc_redist.x64.exe`
