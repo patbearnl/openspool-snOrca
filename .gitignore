@@ -25,6 +25,7 @@ deps/build*/*
 **/.DS_Store
 install_*
 build_*/
+Snapmaker_Orca/
 SVG
 src/Snapmaker_Orca-doc/
 .idea/
