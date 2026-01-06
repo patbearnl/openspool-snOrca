@@ -110,25 +110,37 @@ public static class TypeMapping
     public static string BaseInheritsForType(string type)
     {
         var t = (type ?? "").Trim().ToUpperInvariant();
-        if (t.StartsWith("PLA")) return "fdm_filament_pla";
-        if (t.StartsWith("PETG") || t.StartsWith("PET")) return "fdm_filament_pet";
-        if (t.StartsWith("PCTG")) return "fdm_filament_pctg";
-        if (t.StartsWith("ABS")) return "fdm_filament_abs";
-        if (t.StartsWith("ASA")) return "fdm_filament_asa";
-        if (t.StartsWith("TPU")) return "fdm_filament_tpu";
-        if (t.StartsWith("PC")) return "fdm_filament_pc";
-        if (t.StartsWith("PA")) return "fdm_filament_pa";
-        if (t.StartsWith("PPA")) return "fdm_filament_ppa";
-        if (t.StartsWith("PPS")) return "fdm_filament_pps";
-        if (t.StartsWith("PVA")) return "fdm_filament_pva";
-        if (t.StartsWith("BVOH")) return "fdm_filament_bvoh";
-        if (t.StartsWith("HIPS")) return "fdm_filament_hips";
-        if (t.StartsWith("PP")) return "fdm_filament_pp";
-        if (t.StartsWith("PE")) return "fdm_filament_pe";
-        if (t.StartsWith("EVA")) return "fdm_filament_eva";
-        if (t.StartsWith("PHA")) return "fdm_filament_pha";
-        if (t.StartsWith("SBS")) return "fdm_filament_sbs";
-        return "fdm_filament_common";
+        // User presets must inherit from an existing, already-loaded preset name.
+        // In SnOrca, the "fdm_filament_*" bases are not guaranteed to be present as presets
+        // (depends on which vendor bundles were loaded), so prefer Generic profiles.
+        return t switch
+        {
+            "PLA-CF"   => "Generic PLA-CF",
+            "PETG-CF"  => "Generic PETG-CF",
+            "PETG-GF"  => "Generic PETG-GF",
+            "PETG-HF"  => "Generic PETG HF",
+            "PA-CF"    => "Generic PA-CF",
+            "PCTG"     => "Generic PCTG",
+            "ABS"      => "Generic ABS",
+            "ASA"      => "Generic ASA",
+            "TPU"      => "Generic TPU",
+            "PC"       => "Generic PC",
+            "PA"       => "Generic PA",
+            "PVA"      => "Generic PVA",
+            "BVOH"     => "Generic BVOH",
+            "PETG"     => "Generic PETG",
+            "PLA"      => "Generic PLA",
+            _ when t.StartsWith("PLA", StringComparison.Ordinal)  => "Generic PLA",
+            _ when t.StartsWith("PET", StringComparison.Ordinal)  => "Generic PETG",
+            _ when t.StartsWith("ABS", StringComparison.Ordinal)  => "Generic ABS",
+            _ when t.StartsWith("ASA", StringComparison.Ordinal)  => "Generic ASA",
+            _ when t.StartsWith("TPU", StringComparison.Ordinal)  => "Generic TPU",
+            _ when t.StartsWith("PC", StringComparison.Ordinal)   => "Generic PC",
+            _ when t.StartsWith("PA", StringComparison.Ordinal)   => "Generic PA",
+            _ when t.StartsWith("PVA", StringComparison.Ordinal)  => "Generic PVA",
+            _ when t.StartsWith("BVOH", StringComparison.Ordinal) => "Generic BVOH",
+            _ => "Generic PLA",
+        };
     }
 
     public static string ShortIdSuffix(string id)
@@ -153,4 +165,3 @@ public static class TypeMapping
         return value.IndexOf(token, StringComparison.OrdinalIgnoreCase) >= 0;
     }
 }
-

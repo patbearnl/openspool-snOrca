@@ -459,28 +459,93 @@ void PresetComboBox::add_ams_filaments(std::string selected, bool alias_name)
                 [&filament_id, this](auto &f) { return f.is_compatible && m_collection->get_preset_base(f) == &f && f.filament_id == filament_id; });
 
             // OpenSpool / third-party tags may not provide a filament_id that maps to a system preset.
-            // Try resolving by "Vendor Type Subtype" naming (or fallback to Generic) before dropping to loose matching.
-            if (iter == filaments.end() && !filament_vendor.empty() && !filament_type.empty()) {
-                auto resolve_by_name = [&](const std::string& vendor_name) {
-                    if (vendor_name.empty()) return filaments.end();
-                    std::string type_full = filament_type;
-                    const std::string suffix = !filament_subtype.empty() ? filament_subtype : filament_serial;
-                    if (!suffix.empty() && !boost::algorithm::contains(type_full, suffix))
-                        type_full += " " + suffix;
+            // Try resolving by "Vendor Type [SubType]" naming (with fallbacks) before dropping to loose matching.
+            //
+            // Resolver chain:
+            // 1) vendor + type + subtype (if provided)
+            // 2) vendor + type (ignore subtype if mismatch/unknown)
+            // 3) Generic + type + subtype (if provided)
+            // 4) Generic + type
+            if (iter == filaments.end() && !filament_type.empty()) {
+                auto is_candidate = [&](const Preset& f) {
+                    return f.is_compatible && m_collection->get_preset_base(f) == &f;
+                };
 
-                    const std::string wanted = vendor_name + " " + type_full;
-                    return std::find_if(filaments.begin(), filaments.end(), [&](auto &f) {
-                        if (!f.is_compatible || m_collection->get_preset_base(f) != &f)
-                            return false;
-                        if (f.name == wanted)
-                            return true;
-                        return boost::algorithm::starts_with(f.name, wanted + " @");
+                auto matches_wanted = [&](const Preset& f, const std::string& wanted) {
+                    if (!is_candidate(f)) return false;
+                    return boost::algorithm::iequals(f.name, wanted) ||
+                           boost::algorithm::istarts_with(f.name, wanted + " @");
+                };
+
+                auto resolve_by_wanted = [&](const std::string& wanted) {
+                    if (wanted.empty()) return filaments.end();
+                    return std::find_if(filaments.begin(), filaments.end(), [&](auto& f) {
+                        return matches_wanted(f, wanted);
                     });
                 };
 
-                iter = resolve_by_name(filament_vendor);
+                auto pick_best_vendor_type = [&](const std::string& vendor_name, const std::string& type_name) {
+                    if (vendor_name.empty() || type_name.empty()) return filaments.end();
+                    const std::string wanted = vendor_name + " " + type_name;
+
+                    // Exact "Vendor Type" match (or "Vendor Type @...") first.
+                    auto exact = resolve_by_wanted(wanted);
+                    if (exact != filaments.end()) return exact;
+
+                    // If there's no exact match, consider "Vendor Type <subtype>" presets and prefer "Basic" if present.
+                    auto best = filaments.end();
+                    for (auto it = filaments.begin(); it != filaments.end(); ++it) {
+                        if (!is_candidate(*it)) continue;
+                        if (!boost::algorithm::istarts_with(it->name, wanted + " ")) continue;
+
+                        if (best == filaments.end()) {
+                            best = it;
+                            continue;
+                        }
+
+                        const std::string rest     = it->name.substr(wanted.size() + 1);
+                        const std::string bestrest = best->name.substr(wanted.size() + 1);
+                        const bool        is_basic = boost::algorithm::istarts_with(rest, "basic") || boost::algorithm::istarts_with(rest, "basic @");
+                        const bool best_is_basic   = boost::algorithm::istarts_with(bestrest, "basic") || boost::algorithm::istarts_with(bestrest, "basic @");
+
+                        if (is_basic && !best_is_basic) {
+                            best = it;
+                            continue;
+                        }
+
+                        // Otherwise prefer a shorter (more "general") preset name.
+                        if (it->name.size() < best->name.size())
+                            best = it;
+                    }
+
+                    return best;
+                };
+
+                const std::string suffix = !filament_subtype.empty() ? filament_subtype : filament_serial;
+                auto build_type_full = [&](bool include_suffix) {
+                    if (!include_suffix || suffix.empty()) return filament_type;
+                    std::string type_full = filament_type;
+                    if (!boost::algorithm::icontains(type_full, suffix))
+                        type_full += " " + suffix;
+                    return type_full;
+                };
+
+                auto resolve_chain_for_vendor = [&](const std::string& vendor_name) {
+                    if (vendor_name.empty()) return filaments.end();
+
+                    // 1) vendor + type + suffix (subtype/serial) if provided
+                    if (!suffix.empty()) {
+                        auto it = resolve_by_wanted(vendor_name + " " + build_type_full(true));
+                        if (it != filaments.end()) return it;
+                    }
+
+                    // 2) vendor + type (ignore suffix mismatch/unknown)
+                    return pick_best_vendor_type(vendor_name, filament_type);
+                };
+
+                iter = resolve_chain_for_vendor(filament_vendor);
                 if (iter == filaments.end())
-                    iter = resolve_by_name("Generic");
+                    iter = resolve_chain_for_vendor("Generic");
             }
             if (iter == filaments.end()) {
                 if (!filament_type.empty()) {

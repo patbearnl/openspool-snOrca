@@ -20,17 +20,20 @@ The slicer tries to match presets in this order:
 
 1. `Vendor + Type + Subtype` (if subtype is present and a preset exists)
 2. `Vendor + Type`
+   - If multiple `Vendor + Type <something>` presets exist, it prefers `Basic` (then the shortest/most general name).
 3. If the vendor has no presets: fallback to `Generic`
    - `Generic + Type + Subtype` (if it exists)
    - `Generic + Type`
 
 If your tags follow the common naming scheme `<brand> <type> <subtype>` (subtype optional), you should always get a Machine Filament entry.
 
+Note: `subtype` matching is case-insensitive. The included Android app and converter treat `Basic` as “no subtype”.
+
 ## Custom filament libraries (optional)
 
 You can add your own vendor library (e.g. "PatLabs") by placing filament presets in:
 
-- `%APPDATA%\\Snapmaker_Orca\\user\\default\\filament\\`
+- `%APPDATA%\\Snapmaker_Orca\\user\\default\\filament\\base\\` (root presets for Machine Filament matching)
 
 Note: this fork intentionally keeps the existing app key (`Snapmaker_Orca`) so your normal config/profile storage continues to work.
 

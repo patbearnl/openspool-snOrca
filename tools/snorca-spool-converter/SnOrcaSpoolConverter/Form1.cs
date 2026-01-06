@@ -9,8 +9,11 @@ public partial class Form1 : Form
         InitializeComponent();
 
         var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        var defaultOut = Path.Combine(appData, "Snapmaker_Orca", "user", "default", "filament");
+        var defaultOut = Path.Combine(appData, "Snapmaker_Orca", "user", "default", "filament", "base");
         textOutput.Text = defaultOut;
+
+        checkHideMaterialPresets.Enabled = checkMaterialPresets.Checked;
+        checkMaterialPresets.CheckedChanged += (_, _) => checkHideMaterialPresets.Enabled = checkMaterialPresets.Checked;
     }
 
     private void buttonBrowseInput_Click(object? sender, EventArgs e)
@@ -27,7 +30,7 @@ public partial class Form1 : Form
     private void buttonBrowseOutput_Click(object? sender, EventArgs e)
     {
         using var dlg = new FolderBrowserDialog();
-        dlg.Description = "Select output folder (usually %APPDATA%\\Snapmaker_Orca\\user\\default\\filament)";
+        dlg.Description = "Select output folder (usually %APPDATA%\\Snapmaker_Orca\\user\\default\\filament\\base)";
         dlg.UseDescriptionForTitle = true;
         dlg.ShowNewFolderButton = true;
         if (Directory.Exists(textOutput.Text)) dlg.SelectedPath = textOutput.Text;
@@ -94,31 +97,87 @@ public partial class Form1 : Form
         var overwrite = checkOverwrite.Checked;
         var results = new ConversionSummary();
 
-        foreach (var record in records)
+        var createdProfiles = 0;
+        var hideMaterialPresetsUnlessSpoolPresent = checkHideMaterialPresets.Checked;
+
+        if (checkMaterialPresets.Checked)
         {
-            try
-            {
-                var profile = SnOrcaProfileFactory.FromSpool(record, overrideVendor);
-                var fileName = FileNameUtils.SanitizeFileName(profile.Name) + ".json";
-                var filePath = Path.Combine(outputDir, fileName);
-
-                if (!overwrite && File.Exists(filePath))
+            var grouped = records
+                .Select(r => new
                 {
-                    results.Skipped++;
-                    continue;
-                }
+                    Record = r,
+                    Vendor = string.IsNullOrWhiteSpace(overrideVendor) ? (r.Brand ?? "").Trim() : overrideVendor,
+                    Type = TypeMapping.NormalizeType(r.Material, r.MaterialType),
+                    SubType = TypeMapping.BuildSubType(r.Material, r.MaterialType, TypeMapping.NormalizeType(r.Material, r.MaterialType)),
+                })
+                .Select(x => new
+                {
+                    x.Record,
+                    Vendor = string.IsNullOrWhiteSpace(x.Vendor) ? "Generic" : x.Vendor.Trim(),
+                    x.Type,
+                    SubType = string.IsNullOrWhiteSpace(x.SubType) ? "Basic" : x.SubType.Trim(),
+                })
+                .GroupBy(
+                    x => $"{x.Vendor.ToUpperInvariant()}|{x.Type.ToUpperInvariant()}|{x.SubType.ToUpperInvariant()}",
+                    StringComparer.Ordinal);
 
-                File.WriteAllText(filePath, profile.ToJson(indented: true), new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
-                results.Written++;
-            }
-            catch (Exception ex)
+            foreach (var group in grouped)
             {
-                results.Errors.Add($"{record.Id}: {ex.Message}");
+                var groupRecords = group.Select(x => x.Record);
+                var representative = group.Last();
+
+                try
+                {
+                    var profile = SnOrcaProfileFactory.FromMaterialPreset(groupRecords, overrideVendor, hideMaterialPresetsUnlessSpoolPresent);
+                    var fileName = FileNameUtils.SanitizeFileName(profile.Name) + ".json";
+                    var filePath = Path.Combine(outputDir, fileName);
+
+                    if (!overwrite && File.Exists(filePath))
+                    {
+                        results.Skipped++;
+                        continue;
+                    }
+
+                    File.WriteAllText(filePath, profile.ToJson(indented: true), new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+                    results.Written++;
+                    createdProfiles++;
+                }
+                catch (Exception ex)
+                {
+                    results.Errors.Add($"{representative.Record.Id}: {ex.Message}");
+                }
+            }
+        }
+        else
+        {
+            foreach (var record in records)
+            {
+                try
+                {
+                    var profile = SnOrcaProfileFactory.FromSpool(record, overrideVendor);
+                    var fileName = FileNameUtils.SanitizeFileName(profile.Name) + ".json";
+                    var filePath = Path.Combine(outputDir, fileName);
+
+                    if (!overwrite && File.Exists(filePath))
+                    {
+                        results.Skipped++;
+                        continue;
+                    }
+
+                    File.WriteAllText(filePath, profile.ToJson(indented: true), new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+                    results.Written++;
+                    createdProfiles++;
+                }
+                catch (Exception ex)
+                {
+                    results.Errors.Add($"{record.Id}: {ex.Message}");
+                }
             }
         }
 
         var sb = new StringBuilder();
         sb.AppendLine($"Converted {records.Count} spool(s)");
+        sb.AppendLine($"Profiles: {createdProfiles}");
         sb.AppendLine($"Written: {results.Written}");
         sb.AppendLine($"Skipped: {results.Skipped}");
         sb.AppendLine($"Errors:  {results.Errors.Count}");

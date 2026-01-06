@@ -39,6 +39,8 @@ partial class Form1
         textVendorOverride = new TextBox();
         checkOverwrite = new CheckBox();
         checkDedupById = new CheckBox();
+        checkMaterialPresets = new CheckBox();
+        checkHideMaterialPresets = new CheckBox();
         buttonConvert = new Button();
         labelStatus = new Label();
         SuspendLayout();
@@ -144,13 +146,37 @@ partial class Form1
         checkDedupById.Text = "Deduplicate by id (keep last occurrence)";
         checkDedupById.UseVisualStyleBackColor = true;
         // 
+        // checkMaterialPresets
+        // 
+        checkMaterialPresets.AutoSize = true;
+        checkMaterialPresets.Checked = true;
+        checkMaterialPresets.CheckState = CheckState.Checked;
+        checkMaterialPresets.Location = new Point(12, 215);
+        checkMaterialPresets.Name = "checkMaterialPresets";
+        checkMaterialPresets.Size = new Size(382, 19);
+        checkMaterialPresets.TabIndex = 10;
+        checkMaterialPresets.Text = "Create material presets (brand/type/subtype) for machine spools";
+        checkMaterialPresets.UseVisualStyleBackColor = true;
+        // 
+        // checkHideMaterialPresets
+        // 
+        checkHideMaterialPresets.AutoSize = true;
+        checkHideMaterialPresets.Checked = true;
+        checkHideMaterialPresets.CheckState = CheckState.Checked;
+        checkHideMaterialPresets.Location = new Point(32, 240);
+        checkHideMaterialPresets.Name = "checkHideMaterialPresets";
+        checkHideMaterialPresets.Size = new Size(429, 19);
+        checkHideMaterialPresets.TabIndex = 11;
+        checkHideMaterialPresets.Text = "Hide material presets unless a matching spool is present (instantiation=false)";
+        checkHideMaterialPresets.UseVisualStyleBackColor = true;
+        // 
         // buttonConvert
         // 
         buttonConvert.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         buttonConvert.Location = new Point(694, 220);
         buttonConvert.Name = "buttonConvert";
         buttonConvert.Size = new Size(94, 32);
-        buttonConvert.TabIndex = 10;
+        buttonConvert.TabIndex = 12;
         buttonConvert.Text = "Convert";
         buttonConvert.UseVisualStyleBackColor = true;
         buttonConvert.Click += buttonConvert_Click;
@@ -163,7 +189,7 @@ partial class Form1
         labelStatus.Name = "labelStatus";
         labelStatus.Padding = new Padding(8);
         labelStatus.Size = new Size(776, 168);
-        labelStatus.TabIndex = 11;
+        labelStatus.TabIndex = 13;
         labelStatus.Text = "Select an input file and click Convert.";
         // 
         // Form1
@@ -173,6 +199,8 @@ partial class Form1
         ClientSize = new Size(800, 450);
         Controls.Add(labelStatus);
         Controls.Add(buttonConvert);
+        Controls.Add(checkHideMaterialPresets);
+        Controls.Add(checkMaterialPresets);
         Controls.Add(checkDedupById);
         Controls.Add(checkOverwrite);
         Controls.Add(textVendorOverride);
@@ -185,7 +213,7 @@ partial class Form1
         Controls.Add(labelInput);
         MinimumSize = new Size(820, 489);
         Name = "Form1";
-        Text = "snOrca spool → filament profile converter";
+        Text = "snOrca OpenSpool - Filament Profile Converter";
         ResumeLayout(false);
         PerformLayout();
     }
@@ -202,6 +230,8 @@ partial class Form1
     private TextBox textVendorOverride = null!;
     private CheckBox checkOverwrite = null!;
     private CheckBox checkDedupById = null!;
+    private CheckBox checkMaterialPresets = null!;
+    private CheckBox checkHideMaterialPresets = null!;
     private Button buttonConvert = null!;
     private Label labelStatus = null!;
 }
