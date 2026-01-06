@@ -182,9 +182,36 @@ private fun App(
     var libraryDialogOpen by remember { mutableStateOf(false) }
     var spoolLibrary by remember { mutableStateOf<List<ImportedSpool>>(emptyList()) }
     var lastImportStatus by remember { mutableStateOf<String?>(null) }
+    var importBrandOverride by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
         spoolLibrary = SpoolLibrary.load(context)
+        importBrandOverride = ImportSettings.getBrandOverride(context)
+    }
+
+    fun normalizeBrandOverride(): String? {
+        val v = importBrandOverride.trim()
+        return if (v.isBlank()) null else v
+    }
+
+    fun applyBrandOverrideToTag(tag: SpoolTagData): SpoolTagData {
+        val override = normalizeBrandOverride() ?: return tag
+        return tag.copy(brand = override)
+    }
+
+    fun applyBrandOverrideToSpools(spools: List<ImportedSpool>): List<ImportedSpool> {
+        val override = normalizeBrandOverride() ?: return spools
+        return spools.map { spool ->
+            val oldBrand = spool.tagData.brand.trim()
+            val newTag = spool.tagData.copy(brand = override)
+            val newDisplayName =
+                if (oldBrand.isNotBlank() && spool.displayName.startsWith(oldBrand + " ", ignoreCase = true)) {
+                    override + " " + spool.displayName.drop(oldBrand.length + 1)
+                } else {
+                    override + " " + spool.displayName
+                }
+            spool.copy(displayName = newDisplayName, tagData = newTag)
+        }
     }
 
     fun defaultTempsForType(type: String): Temps? {
@@ -272,13 +299,14 @@ private fun App(
             when (result) {
                 is ImportResult.Single -> {
                     lastImportStatus = "Imported OpenSpool JSON."
-                    applyTagData(result.tagData)
+                    applyTagData(applyBrandOverrideToTag(result.tagData))
                 }
 
                 is ImportResult.Multiple -> {
-                    importedSpools = result.spools
-                    spoolLibrary = result.spools
-                    SpoolLibrary.save(context, result.spools)
+                    val spools = applyBrandOverrideToSpools(result.spools)
+                    importedSpools = spools
+                    spoolLibrary = spools
+                    SpoolLibrary.save(context, spools)
                     importDialogOpen = true
                     lastImportStatus = "Imported ${result.spools.size} spools. Choose one."
                 }
@@ -388,6 +416,17 @@ private fun App(
                             }
                         }
                     }
+
+                    OutlinedTextField(
+                        value = importBrandOverride,
+                        onValueChange = {
+                            importBrandOverride = it
+                            ImportSettings.setBrandOverride(context, it)
+                        },
+                        label = { Text("Import brand override (optional)") },
+                        supportingText = { Text("If set, imported spools will use this brand (vendor) instead of the file's brand.") },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
 
                     Button(
                         onClick = { importLauncher.launch(arrayOf("*/*")) },
