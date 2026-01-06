@@ -54,6 +54,7 @@ An Android app is included to read/write OpenSpool JSON onto NFC tags.
 - Download from Releases: look for `snOrca-openspool-ntag.apk`
 - Modes: Read (load + edit), Write (tap tag to save)
 - Presets: searchable list based on OrcaFilamentLibrary
+- Import: 3dfilamentprofiles.com `my-spools.csv` / `my-spools.json` exports
 - Dark mode follows system theme
 
 OpenSpool JSON fields:
