@@ -2,6 +2,8 @@
 
 Small WinForms tool to convert a `3dfilamentprofiles.com` **My Spools** export (`my-spools.csv` or `my-spools.json`) into SnOrca filament preset JSON files.
 
+Also supports **Spoolman** JSON exports (array of spool objects).
+
 **Output folder (default):**
 
 `%APPDATA%\\Snapmaker_Orca\\user\\default\\filament\\base\\`

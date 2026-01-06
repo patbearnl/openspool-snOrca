@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace SnOrcaSpoolConverter;
@@ -5,6 +6,17 @@ namespace SnOrcaSpoolConverter;
 public static class SnOrcaProfileFactory
 {
     private static readonly Regex HexColorRegex = new(@"#?[0-9a-fA-F]{6}", RegexOptions.Compiled);
+    private static readonly string[] BedTempKeys =
+    [
+        "hot_plate_temp",
+        "hot_plate_temp_initial_layer",
+        "textured_plate_temp",
+        "textured_plate_temp_initial_layer",
+        "cool_plate_temp",
+        "cool_plate_temp_initial_layer",
+        "eng_plate_temp",
+        "eng_plate_temp_initial_layer",
+    ];
 
     public static SnOrcaFilamentProfile FromMaterialPreset(IEnumerable<SpoolRecord> spools, string vendorOverride, bool hideUnlessSpoolPresent)
     {
@@ -37,6 +49,7 @@ public static class SnOrcaProfileFactory
         if (!string.IsNullOrWhiteSpace(spool.FilamentUrl)) notes.Add($"3DFP: {spool.FilamentUrl}");
 
         var extraConfig = FdmTemplateDefaults.TryGetDefaults(type, normalizedSubType);
+        ApplyTempOverrides(extraConfig, spool);
 
         return new SnOrcaFilamentProfile
         {
@@ -77,6 +90,9 @@ public static class SnOrcaProfileFactory
         if (!string.IsNullOrWhiteSpace(spool.Location)) notes.Add($"Location: {spool.Location}");
         if (!string.IsNullOrWhiteSpace(spool.UpdatedAt)) notes.Add($"Updated: {spool.UpdatedAt}");
 
+        var extraConfig = new Dictionary<string, JsonElement>(StringComparer.Ordinal);
+        ApplyTempOverrides(extraConfig, spool);
+
         return new SnOrcaFilamentProfile
         {
             Name = displayName,
@@ -88,6 +104,7 @@ public static class SnOrcaProfileFactory
             FilamentSubType = subType,
             DefaultColour = colorHex,
             Notes = notes,
+            ExtraConfig = extraConfig,
         };
     }
 
@@ -114,5 +131,34 @@ public static class SnOrcaProfileFactory
         if (!m.Success) return null;
         var raw = m.Value.Trim().TrimStart('#').ToUpperInvariant();
         return $"#{raw}";
+    }
+
+    private static void ApplyTempOverrides(Dictionary<string, JsonElement> extraConfig, SpoolRecord spool)
+    {
+        var nozzleMin = spool.NozzleMinTemp;
+        var nozzleMax = spool.NozzleMaxTemp;
+        if (nozzleMin.HasValue && nozzleMax.HasValue)
+        {
+            extraConfig["nozzle_temperature_range_low"] = JsonSerializer.SerializeToElement(new[] { nozzleMin.Value.ToString() });
+            extraConfig["nozzle_temperature_range_high"] = JsonSerializer.SerializeToElement(new[] { nozzleMax.Value.ToString() });
+
+            // Use max as "selected" nozzle temp (reasonable default when only a range is known).
+            extraConfig["nozzle_temperature"] = JsonSerializer.SerializeToElement(new[] { nozzleMax.Value.ToString() });
+            extraConfig["nozzle_temperature_initial_layer"] = JsonSerializer.SerializeToElement(new[] { nozzleMax.Value.ToString() });
+        }
+
+        var bedMin = spool.BedMinTemp;
+        var bedMax = spool.BedMaxTemp;
+        if (bedMin.HasValue && bedMax.HasValue)
+        {
+            // Use max as "selected" bed temp (matches common preset style).
+            var bed = bedMax.Value.ToString();
+            foreach (var key in BedTempKeys)
+            {
+                // If a template already provides the key, overwrite it; if not, set the common hot/textured keys anyway.
+                if (key.StartsWith("hot_plate", StringComparison.Ordinal) || key.StartsWith("textured_plate", StringComparison.Ordinal) || extraConfig.ContainsKey(key))
+                    extraConfig[key] = JsonSerializer.SerializeToElement(new[] { bed });
+            }
+        }
     }
 }

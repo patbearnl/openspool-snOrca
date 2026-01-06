@@ -19,7 +19,7 @@ public partial class Form1 : Form
     private void buttonBrowseInput_Click(object? sender, EventArgs e)
     {
         using var dlg = new OpenFileDialog();
-        dlg.Title = "Select 3D Filament Profiles export (CSV/JSON)";
+        dlg.Title = "Select filament export (3DFP CSV/JSON or Spoolman JSON)";
         dlg.Filter = "CSV or JSON (*.csv;*.json)|*.csv;*.json|All files (*.*)|*.*";
         dlg.CheckFileExists = true;
         dlg.Multiselect = false;
