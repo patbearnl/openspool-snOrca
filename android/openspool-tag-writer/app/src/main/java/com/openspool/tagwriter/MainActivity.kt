@@ -36,6 +36,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -178,7 +179,13 @@ private fun App(
     var presetDialogOpen by remember { mutableStateOf(false) }
     var importDialogOpen by remember { mutableStateOf(false) }
     var importedSpools by remember { mutableStateOf<List<ImportedSpool>>(emptyList()) }
+    var libraryDialogOpen by remember { mutableStateOf(false) }
+    var spoolLibrary by remember { mutableStateOf<List<ImportedSpool>>(emptyList()) }
     var lastImportStatus by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(Unit) {
+        spoolLibrary = SpoolLibrary.load(context)
+    }
 
     fun defaultTempsForType(type: String): Temps? {
         val t = type.trim()
@@ -270,6 +277,8 @@ private fun App(
 
                 is ImportResult.Multiple -> {
                     importedSpools = result.spools
+                    spoolLibrary = result.spools
+                    SpoolLibrary.save(context, result.spools)
                     importDialogOpen = true
                     lastImportStatus = "Imported ${result.spools.size} spools. Choose one."
                 }
@@ -356,6 +365,27 @@ private fun App(
                             modifier = Modifier.weight(1f),
                         ) {
                             Text("Generic PLA")
+                        }
+                    }
+
+                    if (spoolLibrary.isNotEmpty()) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
+                            Button(
+                                onClick = { libraryDialogOpen = true },
+                                modifier = Modifier.weight(1f),
+                            ) {
+                                Text("My spools (${spoolLibrary.size})")
+                            }
+                            TextButton(
+                                onClick = {
+                                    SpoolLibrary.clear(context)
+                                    spoolLibrary = emptyList()
+                                    lastImportStatus = "Cleared saved spools."
+                                },
+                                modifier = Modifier.weight(1f),
+                            ) {
+                                Text("Clear saved")
+                            }
                         }
                     }
 
@@ -582,6 +612,17 @@ private fun App(
             onDismiss = { importDialogOpen = false },
             onPick = { spool ->
                 importDialogOpen = false
+                applyTagData(spool.tagData)
+            },
+        )
+    }
+
+    if (libraryDialogOpen) {
+        ImportedSpoolPickerDialog(
+            spools = spoolLibrary,
+            onDismiss = { libraryDialogOpen = false },
+            onPick = { spool ->
+                libraryDialogOpen = false
                 applyTagData(spool.tagData)
             },
         )
