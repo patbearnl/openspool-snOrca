@@ -5,6 +5,7 @@ import kotlin.math.roundToInt
 
 object ColorUtils {
     private val hexRegex = Regex("^#?[0-9a-fA-F]{6}$")
+    private val hexFindRegex = Regex("#?[0-9a-fA-F]{6}")
 
     fun normalizeHex(input: String): String? {
         val trimmed = input.trim()
@@ -32,5 +33,8 @@ object ColorUtils {
         val b = (color.blue * 255f).roundToInt()
         return rgbToHex(r, g, b)
     }
-}
 
+    fun extractHexColors(input: String): List<String> {
+        return hexFindRegex.findAll(input).mapNotNull { normalizeHex(it.value) }.toList()
+    }
+}

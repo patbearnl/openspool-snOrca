@@ -2,10 +2,12 @@ package com.openspool.tagwriter
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -174,6 +176,33 @@ private fun App(
     var nfcMode by remember { mutableStateOf(NfcMode.WRITE) }
     var isArmed by remember { mutableStateOf(false) }
     var presetDialogOpen by remember { mutableStateOf(false) }
+    var importDialogOpen by remember { mutableStateOf(false) }
+    var importedSpools by remember { mutableStateOf<List<ImportedSpool>>(emptyList()) }
+    var lastImportStatus by remember { mutableStateOf<String?>(null) }
+
+    fun defaultTempsForType(type: String): Temps? {
+        val t = type.trim()
+        if (t.isBlank()) return null
+        val generic =
+            allPresets.firstOrNull { it.brand.equals("Generic", ignoreCase = true) && it.type.equals(t, ignoreCase = true) && it.subtype.isBlank() }
+                ?: allPresets.firstOrNull { it.brand.equals("Generic", ignoreCase = true) && it.type.equals(t, ignoreCase = true) }
+        return if (generic?.minTemp != null && generic.maxTemp != null && generic.bedMinTemp != null && generic.bedMaxTemp != null) {
+            Temps(
+                minTemp = generic.minTemp,
+                maxTemp = generic.maxTemp,
+                bedMinTemp = generic.bedMinTemp,
+                bedMaxTemp = generic.bedMaxTemp,
+            )
+        } else {
+            null
+        }
+    }
+
+    fun readTextFromUri(uri: Uri): String? {
+        return runCatching {
+            context.contentResolver.openInputStream(uri)?.bufferedReader(Charsets.UTF_8)?.use { it.readText() }
+        }.getOrNull()
+    }
 
     fun rebuildPayload() {
         val minTemp = minTempText.toIntOrNull() ?: 0
@@ -215,6 +244,41 @@ private fun App(
 
         rebuildPayload()
     }
+
+    val importLauncher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.OpenDocument()) { uri: Uri? ->
+            if (uri == null) return@rememberLauncherForActivityResult
+            val text = readTextFromUri(uri)
+            if (text.isNullOrBlank()) {
+                lastImportStatus = "Import failed: empty file."
+                return@rememberLauncherForActivityResult
+            }
+
+            val trimmed = text.trimStart()
+            val result =
+                if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
+                    SpoolImport.importFromJson(text) { t -> defaultTempsForType(t) }
+                } else {
+                    SpoolImport.importFromCsv(text) { t -> defaultTempsForType(t) }
+                }
+
+            when (result) {
+                is ImportResult.Single -> {
+                    lastImportStatus = "Imported OpenSpool JSON."
+                    applyTagData(result.tagData)
+                }
+
+                is ImportResult.Multiple -> {
+                    importedSpools = result.spools
+                    importDialogOpen = true
+                    lastImportStatus = "Imported ${result.spools.size} spools. Choose one."
+                }
+
+                is ImportResult.Error -> {
+                    lastImportStatus = "Import failed: ${result.message}"
+                }
+            }
+        }
 
     onRegisterWriteResultListener { result ->
         lastWriteStatus =
@@ -294,6 +358,15 @@ private fun App(
                             Text("Generic PLA")
                         }
                     }
+
+                    Button(
+                        onClick = { importLauncher.launch(arrayOf("*/*")) },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text("Import spools (CSV/JSON)")
+                    }
+
+                    lastImportStatus?.let { Text(it, style = MaterialTheme.typography.bodySmall) }
 
                     Text(
                         text =
@@ -502,6 +575,17 @@ private fun App(
             },
         )
     }
+
+    if (importDialogOpen) {
+        ImportedSpoolPickerDialog(
+            spools = importedSpools,
+            onDismiss = { importDialogOpen = false },
+            onPick = { spool ->
+                importDialogOpen = false
+                applyTagData(spool.tagData)
+            },
+        )
+    }
 }
 
 @Composable
@@ -555,5 +639,57 @@ private fun PresetPickerDialog(
         confirmButton = {
             TextButton(onClick = onDismiss) { Text("Close") }
         },
+    )
+}
+
+@Composable
+private fun ImportedSpoolPickerDialog(
+    spools: List<ImportedSpool>,
+    onDismiss: () -> Unit,
+    onPick: (ImportedSpool) -> Unit,
+) {
+    var query by remember { mutableStateOf("") }
+
+    val filtered =
+        remember(spools, query) {
+            val q = query.trim().lowercase()
+            if (q.isEmpty()) spools
+            else spools.filter { it.displayName.lowercase().contains(q) }
+        }
+
+    androidx.compose.material3.AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Choose spool") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(
+                    value = query,
+                    onValueChange = { query = it },
+                    label = { Text("Search") },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(360.dp)
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
+                    if (filtered.isEmpty()) {
+                        Text("No matches.")
+                    } else {
+                        filtered.forEach { spool ->
+                            TextButton(
+                                onClick = { onPick(spool) },
+                                modifier = Modifier.fillMaxWidth(),
+                            ) {
+                                Text(spool.displayName, modifier = Modifier.fillMaxWidth())
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = { TextButton(onClick = onDismiss) { Text("Close") } },
     )
 }
