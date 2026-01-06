@@ -29,6 +29,14 @@ Notes:
 
 - `subtype` is optional; if left empty in the UI, it is omitted from the JSON.
 
+## Import formats
+
+The app can import spools from:
+
+- OpenSpool JSON (single object)
+- `3dfilamentprofiles.com` exports: `my-spools.csv` and `my-spools.json`
+- Spoolman export JSON (array of objects; fields like `manufacturer`, `material`, `finish`, `color_hex`, temps)
+
 ## Build / run
 
 This folder is a standalone Android Studio project.

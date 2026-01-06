@@ -14,6 +14,7 @@ object SpoolImport {
      * Supports:
      * - OpenSpool single JSON object
      * - 3dfilamentprofiles.com "my-spools.json" export (array of objects)
+     * - Spoolman export (array of objects)
      */
     fun importFromJson(
         json: String,
@@ -44,7 +45,10 @@ object SpoolImport {
                 buildList {
                     for (i in 0 until arr.length()) {
                         val obj = arr.optJSONObject(i) ?: continue
-                        from3dfpObject(obj, defaultTempsProvider)?.let { add(it) }
+                        val spool =
+                            from3dfpObject(obj, defaultTempsProvider)
+                                ?: fromSpoolmanObject(obj, defaultTempsProvider)
+                        if (spool != null) add(spool)
                     }
                 }
             if (spools.isEmpty()) ImportResult.Error("No usable spools found in JSON")
@@ -118,6 +122,102 @@ object SpoolImport {
                 type,
                 subtype.takeIf { it.isNotBlank() },
                 colorName.takeIf { it.isNotBlank() },
+                "#$idSuffix",
+            ).filterNotNull()
+
+        return ImportedSpool(
+            id = id.ifBlank { idSuffix },
+            displayName = nameParts.joinToString(" "),
+            tagData = tag,
+        )
+    }
+
+    /**
+     * Supports Spoolman JSON exports like:
+     * {
+     *   "id": "...",
+     *   "manufacturer": "3D-Fuel",
+     *   "name": "Autumn Orange",
+     *   "material": "PLA+",
+     *   "color_hex": "F76647",
+     *   "color_hexes": ["#AABBCC", "#DDEEFF"],
+     *   "extruder_temp": 220,
+     *   "extruder_temp_range": [210, 230],
+     *   "bed_temp": 60,
+     *   "bed_temp_range": [50, 70],
+     *   "finish": "Matte"
+     * }
+     */
+    private fun fromSpoolmanObject(
+        obj: JSONObject,
+        defaultTempsProvider: (type: String) -> Temps?,
+    ): ImportedSpool? {
+        val id = obj.optString("id", "").trim()
+        val manufacturer = obj.optString("manufacturer", "").trim()
+        val material = obj.optString("material", "").trim()
+        val name = obj.optString("name", "").trim()
+        val finish = obj.optString("finish", "").trim()
+
+        if (manufacturer.isBlank() || material.isBlank()) return null
+
+        val type = OpenSpoolTypeMapper.normalize(material) ?: material
+
+        val colorHex =
+            run {
+                val hexes = obj.optJSONArray("color_hexes")
+                val fromHexes =
+                    if (hexes != null && hexes.length() > 0) {
+                        ColorUtils.normalizeHex(hexes.optString(0, ""))
+                    } else {
+                        null
+                    }
+                fromHexes
+                    ?: ColorUtils.normalizeHex(obj.optString("color_hex", ""))
+                    ?: "#FFFFFF"
+            }
+
+        val subtype =
+            when {
+                finish.isNotBlank() -> finish
+                else -> ""
+            }
+
+        fun rangeToPair(arr: JSONArray?): Pair<Int?, Int?> {
+            if (arr == null || arr.length() < 2) return null to null
+            val lo = arr.optInt(0, Int.MIN_VALUE).takeIf { it != Int.MIN_VALUE }
+            val hi = arr.optInt(1, Int.MIN_VALUE).takeIf { it != Int.MIN_VALUE }
+            return lo to hi
+        }
+
+        val (nozzleLo, nozzleHi) = rangeToPair(obj.optJSONArray("extruder_temp_range"))
+        val (bedLo, bedHi) = rangeToPair(obj.optJSONArray("bed_temp_range"))
+
+        val defaults = defaultTempsProvider(type)
+
+        val minTemp = nozzleLo ?: obj.optInt("extruder_temp", defaults?.minTemp ?: 190)
+        val maxTemp = nozzleHi ?: obj.optInt("extruder_temp", defaults?.maxTemp ?: 220)
+        val bedMinTemp = bedLo ?: obj.optInt("bed_temp", defaults?.bedMinTemp ?: 50)
+        val bedMaxTemp = bedHi ?: obj.optInt("bed_temp", defaults?.bedMaxTemp ?: 60)
+
+        val tag =
+            SpoolTagData(
+                brand = manufacturer,
+                type = type,
+                subtype = subtype,
+                colorHex = colorHex,
+                minTemp = minTemp,
+                maxTemp = maxTemp,
+                bedMinTemp = bedMinTemp,
+                bedMaxTemp = bedMaxTemp,
+            )
+
+        val idSuffix = id.takeLast(6).ifBlank { "------" }
+        val nameParts =
+            listOf(
+                manufacturer,
+                type,
+                subtype.takeIf { it.isNotBlank() },
+                name.takeIf { it.isNotBlank() },
                 "#$idSuffix",
             ).filterNotNull()
 
