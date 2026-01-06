@@ -1,6 +1,6 @@
 ﻿# snOrca OpenSpool
 
-Community fork of **Snapmaker Orca** that adds **OpenSpool** tag support for Snapmaker U1 running custom **paxx12** firmware (and other setups that report OpenSpool-compatible spool metadata).
+Community fork of **Snapmaker Orca** that adds **OpenSpool** tag support for Snapmaker U1 running custom [**paxx12 firmware**](https://github.com/paxx12/SnapmakerU1-Extended-Firmware) (and other setups that report OpenSpool-compatible spool metadata).
 
 Based on Snapmaker Orca `2.2.1`.
 
@@ -94,6 +94,6 @@ See `LICENSE.txt`.
 - Snapmaker Orca (upstream)
 - OrcaSlicer / Bambu Studio / PrusaSlicer / Slic3r
 - OpenSpool protocol community
-- paxx12 for being the first with Snapmaker U1 custom firmware
+- [paxx12](https://github.com/paxx12/SnapmakerU1-Extended-Firmware) for being the first with Snapmaker U1 custom firmware
 
 
