@@ -5,7 +5,7 @@ namespace SnOrcaSpoolConverter;
 
 public sealed class SnOrcaFilamentProfile
 {
-    public string Version { get; init; } = "2.2.1";
+    public string Version { get; init; } = "2.2.105";
 
     public required string Name { get; init; }
     public string Inherits { get; init; } = "";
