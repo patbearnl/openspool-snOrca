@@ -494,6 +494,10 @@ private fun App(
                 brand = preset.brand
                 type = preset.type
                 subtype = preset.subtype
+                preset.minTemp?.let { minTempText = it.toString() }
+                preset.maxTemp?.let { maxTempText = it.toString() }
+                preset.bedMinTemp?.let { bedMinTempText = it.toString() }
+                preset.bedMaxTemp?.let { bedMaxTempText = it.toString() }
                 rebuildPayload()
             },
         )

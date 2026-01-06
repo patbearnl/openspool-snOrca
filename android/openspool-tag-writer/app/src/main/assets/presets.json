@@ -3,229 +3,381 @@
     "brand": "AliZ",
     "type": "PA-CF",
     "subtype": "",
-    "display_name": "AliZ PA-CF"
+    "display_name": "AliZ PA-CF",
+    "min_temp": 260,
+    "max_temp": 300,
+    "bed_min_temp": 100,
+    "bed_max_temp": 100
   },
   {
     "brand": "AliZ",
     "type": "PETG",
     "subtype": "",
-    "display_name": "AliZ PETG"
+    "display_name": "AliZ PETG",
+    "min_temp": 220,
+    "max_temp": 260,
+    "bed_min_temp": 80,
+    "bed_max_temp": 80
   },
   {
     "brand": "AliZ",
     "type": "PETG-CF",
     "subtype": "",
-    "display_name": "AliZ PETG-CF"
+    "display_name": "AliZ PETG-CF",
+    "min_temp": 220,
+    "max_temp": 260,
+    "bed_min_temp": 80,
+    "bed_max_temp": 80
   },
   {
     "brand": "AliZ",
     "type": "PETG-Metal",
     "subtype": "",
-    "display_name": "AliZ PETG-Metal"
+    "display_name": "AliZ PETG-Metal",
+    "min_temp": 220,
+    "max_temp": 260,
+    "bed_min_temp": 80,
+    "bed_max_temp": 80
   },
   {
     "brand": "AliZ",
     "type": "PLA",
     "subtype": "",
-    "display_name": "AliZ PLA"
+    "display_name": "AliZ PLA",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Bambu",
     "type": "ABS",
     "subtype": "",
-    "display_name": "Bambu ABS"
+    "display_name": "Bambu ABS",
+    "min_temp": 240,
+    "max_temp": 280,
+    "bed_min_temp": 100,
+    "bed_max_temp": 105
   },
   {
     "brand": "Bambu",
     "type": "ABS-GF",
     "subtype": "",
-    "display_name": "Bambu ABS-GF"
+    "display_name": "Bambu ABS-GF",
+    "min_temp": 240,
+    "max_temp": 280,
+    "bed_min_temp": 100,
+    "bed_max_temp": 105
   },
   {
     "brand": "Bambu",
     "type": "ASA",
     "subtype": "",
-    "display_name": "Bambu ASA"
+    "display_name": "Bambu ASA",
+    "min_temp": 240,
+    "max_temp": 280,
+    "bed_min_temp": 100,
+    "bed_max_temp": 105
   },
   {
     "brand": "Bambu",
     "type": "ASA-Aero",
     "subtype": "",
-    "display_name": "Bambu ASA-Aero"
+    "display_name": "Bambu ASA-Aero",
+    "min_temp": 240,
+    "max_temp": 280,
+    "bed_min_temp": 100,
+    "bed_max_temp": 105
   },
   {
     "brand": "Bambu",
     "type": "ASA-CF",
     "subtype": "",
-    "display_name": "Bambu ASA-CF"
+    "display_name": "Bambu ASA-CF",
+    "min_temp": 240,
+    "max_temp": 280,
+    "bed_min_temp": 100,
+    "bed_max_temp": 105
   },
   {
     "brand": "Bambu",
     "type": "PA-CF",
     "subtype": "",
-    "display_name": "Bambu PA-CF"
+    "display_name": "Bambu PA-CF",
+    "min_temp": 260,
+    "max_temp": 300,
+    "bed_min_temp": 100,
+    "bed_max_temp": 100
   },
   {
     "brand": "Bambu",
     "type": "PA6-CF",
     "subtype": "",
-    "display_name": "Bambu PA6-CF"
+    "display_name": "Bambu PA6-CF",
+    "min_temp": 260,
+    "max_temp": 300,
+    "bed_min_temp": 100,
+    "bed_max_temp": 100
   },
   {
     "brand": "Bambu",
     "type": "PA6-GF",
     "subtype": "",
-    "display_name": "Bambu PA6-GF"
+    "display_name": "Bambu PA6-GF",
+    "min_temp": 260,
+    "max_temp": 300,
+    "bed_min_temp": 100,
+    "bed_max_temp": 100
   },
   {
     "brand": "Bambu",
     "type": "PAHT-CF",
     "subtype": "",
-    "display_name": "Bambu PAHT-CF"
+    "display_name": "Bambu PAHT-CF",
+    "min_temp": 260,
+    "max_temp": 300,
+    "bed_min_temp": 100,
+    "bed_max_temp": 100
   },
   {
     "brand": "Bambu",
     "type": "PC",
     "subtype": "",
-    "display_name": "Bambu PC"
+    "display_name": "Bambu PC",
+    "min_temp": 260,
+    "max_temp": 290,
+    "bed_min_temp": 110,
+    "bed_max_temp": 110
   },
   {
     "brand": "Bambu",
     "type": "PC",
     "subtype": "FR",
-    "display_name": "Bambu PC FR"
+    "display_name": "Bambu PC FR",
+    "min_temp": 260,
+    "max_temp": 290,
+    "bed_min_temp": 110,
+    "bed_max_temp": 110
   },
   {
     "brand": "Bambu",
     "type": "PET-CF",
     "subtype": "",
-    "display_name": "Bambu PET-CF"
+    "display_name": "Bambu PET-CF",
+    "min_temp": 220,
+    "max_temp": 260,
+    "bed_min_temp": 80,
+    "bed_max_temp": 80
   },
   {
     "brand": "Bambu",
     "type": "PETG",
     "subtype": "Basic",
-    "display_name": "Bambu PETG Basic"
+    "display_name": "Bambu PETG Basic",
+    "min_temp": 220,
+    "max_temp": 260,
+    "bed_min_temp": 80,
+    "bed_max_temp": 80
   },
   {
     "brand": "Bambu",
     "type": "PETG",
     "subtype": "HF",
-    "display_name": "Bambu PETG HF"
+    "display_name": "Bambu PETG HF",
+    "min_temp": 220,
+    "max_temp": 260,
+    "bed_min_temp": 80,
+    "bed_max_temp": 80
   },
   {
     "brand": "Bambu",
     "type": "PETG",
     "subtype": "Translucent",
-    "display_name": "Bambu PETG Translucent"
+    "display_name": "Bambu PETG Translucent",
+    "min_temp": 220,
+    "max_temp": 260,
+    "bed_min_temp": 80,
+    "bed_max_temp": 80
   },
   {
     "brand": "Bambu",
     "type": "PETG-CF",
     "subtype": "",
-    "display_name": "Bambu PETG-CF"
+    "display_name": "Bambu PETG-CF",
+    "min_temp": 220,
+    "max_temp": 260,
+    "bed_min_temp": 80,
+    "bed_max_temp": 80
   },
   {
     "brand": "Bambu",
     "type": "PLA",
     "subtype": "Aero",
-    "display_name": "Bambu PLA Aero"
+    "display_name": "Bambu PLA Aero",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Bambu",
     "type": "PLA",
     "subtype": "Basic",
-    "display_name": "Bambu PLA Basic"
+    "display_name": "Bambu PLA Basic",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Bambu",
     "type": "PLA",
     "subtype": "Dynamic",
-    "display_name": "Bambu PLA Dynamic"
+    "display_name": "Bambu PLA Dynamic",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Bambu",
     "type": "PLA",
     "subtype": "Galaxy",
-    "display_name": "Bambu PLA Galaxy"
+    "display_name": "Bambu PLA Galaxy",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Bambu",
     "type": "PLA",
     "subtype": "Glow",
-    "display_name": "Bambu PLA Glow"
+    "display_name": "Bambu PLA Glow",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Bambu",
     "type": "PLA",
     "subtype": "Impact",
-    "display_name": "Bambu PLA Impact"
+    "display_name": "Bambu PLA Impact",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Bambu",
     "type": "PLA",
     "subtype": "Marble",
-    "display_name": "Bambu PLA Marble"
+    "display_name": "Bambu PLA Marble",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Bambu",
     "type": "PLA",
     "subtype": "Matte",
-    "display_name": "Bambu PLA Matte"
+    "display_name": "Bambu PLA Matte",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Bambu",
     "type": "PLA",
     "subtype": "Metal",
-    "display_name": "Bambu PLA Metal"
+    "display_name": "Bambu PLA Metal",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Bambu",
     "type": "PLA",
     "subtype": "Silk",
-    "display_name": "Bambu PLA Silk"
+    "display_name": "Bambu PLA Silk",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Bambu",
     "type": "PLA",
     "subtype": "Silk+",
-    "display_name": "Bambu PLA Silk+"
+    "display_name": "Bambu PLA Silk+",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Bambu",
     "type": "PLA",
     "subtype": "Sparkle",
-    "display_name": "Bambu PLA Sparkle"
+    "display_name": "Bambu PLA Sparkle",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Bambu",
     "type": "PLA",
     "subtype": "Tough",
-    "display_name": "Bambu PLA Tough"
+    "display_name": "Bambu PLA Tough",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Bambu",
     "type": "PLA",
     "subtype": "Wood",
-    "display_name": "Bambu PLA Wood"
+    "display_name": "Bambu PLA Wood",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Bambu",
     "type": "PLA-CF",
     "subtype": "",
-    "display_name": "Bambu PLA-CF"
+    "display_name": "Bambu PLA-CF",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Bambu",
     "type": "PPA-CF",
     "subtype": "",
-    "display_name": "Bambu PPA-CF"
+    "display_name": "Bambu PPA-CF",
+    "min_temp": 280,
+    "max_temp": 320,
+    "bed_min_temp": 100,
+    "bed_max_temp": 100
   },
   {
     "brand": "Bambu",
     "type": "PVA",
     "subtype": "",
-    "display_name": "Bambu PVA"
+    "display_name": "Bambu PVA",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Bambu",
@@ -267,133 +419,151 @@
     "brand": "Bambu",
     "type": "TPU",
     "subtype": "95A",
-    "display_name": "Bambu TPU 95A"
+    "display_name": "Bambu TPU 95A",
+    "min_temp": 200,
+    "max_temp": 250,
+    "bed_min_temp": 35,
+    "bed_max_temp": 35
   },
   {
     "brand": "Bambu",
     "type": "TPU",
     "subtype": "95A HF",
-    "display_name": "Bambu TPU 95A HF"
+    "display_name": "Bambu TPU 95A HF",
+    "min_temp": 200,
+    "max_temp": 250,
+    "bed_min_temp": 35,
+    "bed_max_temp": 35
   },
   {
     "brand": "eSUN",
     "type": "ePLA-LW",
     "subtype": "",
-    "display_name": "eSUN ePLA-LW"
+    "display_name": "eSUN ePLA-LW",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "eSUN",
     "type": "PETG",
     "subtype": "",
-    "display_name": "eSUN PETG"
+    "display_name": "eSUN PETG",
+    "min_temp": 220,
+    "max_temp": 260,
+    "bed_min_temp": 80,
+    "bed_max_temp": 80
   },
   {
     "brand": "eSUN",
     "type": "PLA+",
     "subtype": "",
-    "display_name": "eSUN PLA+"
+    "display_name": "eSUN PLA+",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "FDplast",
     "type": "ABS",
     "subtype": "",
-    "display_name": "FDplast ABS"
+    "display_name": "FDplast ABS",
+    "min_temp": 240,
+    "max_temp": 280,
+    "bed_min_temp": 100,
+    "bed_max_temp": 105
   },
   {
     "brand": "FDplast",
     "type": "HIPS",
     "subtype": "",
-    "display_name": "FDplast HIPS"
+    "display_name": "FDplast HIPS",
+    "min_temp": 220,
+    "max_temp": 270,
+    "bed_min_temp": 90,
+    "bed_max_temp": 90
   },
   {
     "brand": "FDplast",
     "type": "PETG",
     "subtype": "",
-    "display_name": "FDplast PETG"
+    "display_name": "FDplast PETG",
+    "min_temp": 220,
+    "max_temp": 260,
+    "bed_min_temp": 80,
+    "bed_max_temp": 80
   },
   {
     "brand": "FDplast",
     "type": "PLA",
     "subtype": "",
-    "display_name": "FDplast PLA"
+    "display_name": "FDplast PLA",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "FDplast",
     "type": "SBS",
     "subtype": "",
-    "display_name": "FDplast SBS"
+    "display_name": "FDplast SBS",
+    "min_temp": 215,
+    "max_temp": 250,
+    "bed_min_temp": 70,
+    "bed_max_temp": 70
   },
   {
     "brand": "FDplast",
     "type": "TPU",
     "subtype": "",
-    "display_name": "FDplast TPU"
-  },
-  {
-    "brand": "Fiberon",
-    "type": "PA12-CF",
-    "subtype": "",
-    "display_name": "Fiberon PA12-CF"
-  },
-  {
-    "brand": "Fiberon",
-    "type": "PA6-CF",
-    "subtype": "",
-    "display_name": "Fiberon PA6-CF"
-  },
-  {
-    "brand": "Fiberon",
-    "type": "PA6-GF",
-    "subtype": "",
-    "display_name": "Fiberon PA6-GF"
-  },
-  {
-    "brand": "Fiberon",
-    "type": "PA612-CF",
-    "subtype": "",
-    "display_name": "Fiberon PA612-CF"
-  },
-  {
-    "brand": "Fiberon",
-    "type": "PET-CF",
-    "subtype": "",
-    "display_name": "Fiberon PET-CF"
-  },
-  {
-    "brand": "Fiberon",
-    "type": "PETG-ESD",
-    "subtype": "",
-    "display_name": "Fiberon PETG-ESD"
-  },
-  {
-    "brand": "Fiberon",
-    "type": "PETG-rCF",
-    "subtype": "",
-    "display_name": "Fiberon PETG-rCF"
+    "display_name": "FDplast TPU",
+    "min_temp": 200,
+    "max_temp": 250,
+    "bed_min_temp": 35,
+    "bed_max_temp": 35
   },
   {
     "brand": "FusRock",
     "type": "ABS-GF",
     "subtype": "",
-    "display_name": "FusRock ABS-GF"
+    "display_name": "FusRock ABS-GF",
+    "min_temp": 240,
+    "max_temp": 280,
+    "bed_min_temp": 100,
+    "bed_max_temp": 105
   },
   {
     "brand": "Generic",
     "type": "ABS",
     "subtype": "",
-    "display_name": "Generic ABS"
+    "display_name": "Generic ABS",
+    "min_temp": 240,
+    "max_temp": 280,
+    "bed_min_temp": 100,
+    "bed_max_temp": 105
   },
   {
     "brand": "Generic",
     "type": "ASA",
     "subtype": "",
-    "display_name": "Generic ASA"
+    "display_name": "Generic ASA",
+    "min_temp": 240,
+    "max_temp": 280,
+    "bed_min_temp": 100,
+    "bed_max_temp": 105
   },
   {
     "brand": "Generic",
     "type": "BVOH",
     "subtype": "",
-    "display_name": "Generic BVOH"
+    "display_name": "Generic BVOH",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Generic",
@@ -405,169 +575,281 @@
     "brand": "Generic",
     "type": "HIPS",
     "subtype": "",
-    "display_name": "Generic HIPS"
+    "display_name": "Generic HIPS",
+    "min_temp": 220,
+    "max_temp": 270,
+    "bed_min_temp": 90,
+    "bed_max_temp": 90
   },
   {
     "brand": "Generic",
     "type": "PA",
     "subtype": "",
-    "display_name": "Generic PA"
+    "display_name": "Generic PA",
+    "min_temp": 260,
+    "max_temp": 300,
+    "bed_min_temp": 100,
+    "bed_max_temp": 100
   },
   {
     "brand": "Generic",
     "type": "PA-CF",
     "subtype": "",
-    "display_name": "Generic PA-CF"
+    "display_name": "Generic PA-CF",
+    "min_temp": 260,
+    "max_temp": 300,
+    "bed_min_temp": 100,
+    "bed_max_temp": 100
   },
   {
     "brand": "Generic",
     "type": "PC",
     "subtype": "",
-    "display_name": "Generic PC"
+    "display_name": "Generic PC",
+    "min_temp": 260,
+    "max_temp": 290,
+    "bed_min_temp": 110,
+    "bed_max_temp": 110
   },
   {
     "brand": "Generic",
     "type": "PCTG",
     "subtype": "",
-    "display_name": "Generic PCTG"
+    "display_name": "Generic PCTG",
+    "min_temp": 220,
+    "max_temp": 260,
+    "bed_min_temp": 80,
+    "bed_max_temp": 80
   },
   {
     "brand": "Generic",
     "type": "PE",
     "subtype": "",
-    "display_name": "Generic PE"
+    "display_name": "Generic PE",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Generic",
     "type": "PE-CF",
     "subtype": "",
-    "display_name": "Generic PE-CF"
+    "display_name": "Generic PE-CF",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Generic",
     "type": "PETG",
     "subtype": "",
-    "display_name": "Generic PETG"
+    "display_name": "Generic PETG",
+    "min_temp": 220,
+    "max_temp": 260,
+    "bed_min_temp": 80,
+    "bed_max_temp": 80
   },
   {
     "brand": "Generic",
     "type": "PETG",
     "subtype": "HF",
-    "display_name": "Generic PETG HF"
+    "display_name": "Generic PETG HF",
+    "min_temp": 220,
+    "max_temp": 260,
+    "bed_min_temp": 80,
+    "bed_max_temp": 80
   },
   {
     "brand": "Generic",
     "type": "PETG-CF",
     "subtype": "",
-    "display_name": "Generic PETG-CF"
+    "display_name": "Generic PETG-CF",
+    "min_temp": 220,
+    "max_temp": 260,
+    "bed_min_temp": 80,
+    "bed_max_temp": 80
   },
   {
     "brand": "Generic",
     "type": "PHA",
     "subtype": "",
-    "display_name": "Generic PHA"
+    "display_name": "Generic PHA",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Generic",
     "type": "PLA",
     "subtype": "",
-    "display_name": "Generic PLA"
+    "display_name": "Generic PLA",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Generic",
     "type": "PLA",
     "subtype": "High Speed",
-    "display_name": "Generic PLA High Speed"
+    "display_name": "Generic PLA High Speed",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Generic",
     "type": "PLA",
     "subtype": "Matte",
-    "display_name": "Generic PLA Matte"
+    "display_name": "Generic PLA Matte",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Generic",
     "type": "PLA",
     "subtype": "Silk",
-    "display_name": "Generic PLA Silk"
+    "display_name": "Generic PLA Silk",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Generic",
     "type": "PLA-CF",
     "subtype": "",
-    "display_name": "Generic PLA-CF"
+    "display_name": "Generic PLA-CF",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Generic",
     "type": "PP",
     "subtype": "",
-    "display_name": "Generic PP"
+    "display_name": "Generic PP",
+    "min_temp": 220,
+    "max_temp": 250,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Generic",
     "type": "PP-CF",
     "subtype": "",
-    "display_name": "Generic PP-CF"
+    "display_name": "Generic PP-CF",
+    "min_temp": 220,
+    "max_temp": 250,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Generic",
     "type": "PP-GF",
     "subtype": "",
-    "display_name": "Generic PP-GF"
+    "display_name": "Generic PP-GF",
+    "min_temp": 220,
+    "max_temp": 250,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Generic",
     "type": "PPA-CF",
     "subtype": "",
-    "display_name": "Generic PPA-CF"
+    "display_name": "Generic PPA-CF",
+    "min_temp": 280,
+    "max_temp": 320,
+    "bed_min_temp": 100,
+    "bed_max_temp": 100
   },
   {
     "brand": "Generic",
     "type": "PPA-GF",
     "subtype": "",
-    "display_name": "Generic PPA-GF"
+    "display_name": "Generic PPA-GF",
+    "min_temp": 280,
+    "max_temp": 320,
+    "bed_min_temp": 100,
+    "bed_max_temp": 100
   },
   {
     "brand": "Generic",
     "type": "PVA",
     "subtype": "",
-    "display_name": "Generic PVA"
+    "display_name": "Generic PVA",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Generic",
     "type": "SBS",
     "subtype": "",
-    "display_name": "Generic SBS"
+    "display_name": "Generic SBS",
+    "min_temp": 215,
+    "max_temp": 250,
+    "bed_min_temp": 70,
+    "bed_max_temp": 70
   },
   {
     "brand": "Generic",
     "type": "TPU",
     "subtype": "",
-    "display_name": "Generic TPU"
+    "display_name": "Generic TPU",
+    "min_temp": 200,
+    "max_temp": 250,
+    "bed_min_temp": 35,
+    "bed_max_temp": 35
   },
   {
     "brand": "NIT",
     "type": "ABS",
     "subtype": "",
-    "display_name": "NIT ABS"
+    "display_name": "NIT ABS",
+    "min_temp": 240,
+    "max_temp": 280,
+    "bed_min_temp": 100,
+    "bed_max_temp": 105
   },
   {
     "brand": "NIT",
     "type": "PETG",
     "subtype": "",
-    "display_name": "NIT PETG"
+    "display_name": "NIT PETG",
+    "min_temp": 220,
+    "max_temp": 260,
+    "bed_min_temp": 80,
+    "bed_max_temp": 80
   },
   {
     "brand": "NIT",
     "type": "PLA",
     "subtype": "",
-    "display_name": "NIT PLA"
+    "display_name": "NIT PLA",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Overture",
     "type": "ABS",
     "subtype": "Basic",
-    "display_name": "Overture ABS Basic"
+    "display_name": "Overture ABS Basic",
+    "min_temp": 240,
+    "max_temp": 280,
+    "bed_min_temp": 100,
+    "bed_max_temp": 105
   },
   {
     "brand": "Overture",
@@ -579,7 +861,11 @@
     "brand": "Overture",
     "type": "ASA",
     "subtype": "",
-    "display_name": "Overture ASA"
+    "display_name": "Overture ASA",
+    "min_temp": 240,
+    "max_temp": 280,
+    "bed_min_temp": 100,
+    "bed_max_temp": 105
   },
   {
     "brand": "Overture",
@@ -597,13 +883,21 @@
     "brand": "Overture",
     "type": "PLA",
     "subtype": "",
-    "display_name": "Overture PLA"
+    "display_name": "Overture PLA",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Overture",
     "type": "PLA",
     "subtype": "Pro",
-    "display_name": "Overture PLA Pro"
+    "display_name": "Overture PLA Pro",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Overture",
@@ -627,163 +921,281 @@
     "brand": "Overture",
     "type": "TPU",
     "subtype": "",
-    "display_name": "Overture TPU"
+    "display_name": "Overture TPU",
+    "min_temp": 200,
+    "max_temp": 250,
+    "bed_min_temp": 35,
+    "bed_max_temp": 35
   },
   {
-    "brand": "Panchroma",
-    "type": "CoPE",
-    "subtype": "",
-    "display_name": "Panchroma CoPE"
+    "brand": "Polymaker",
+    "type": "Fiberon",
+    "subtype": "PA12-CF",
+    "display_name": "Polymaker Fiberon PA12-CF"
   },
   {
-    "brand": "Panchroma",
-    "type": "PLA",
-    "subtype": "",
-    "display_name": "Panchroma PLA"
+    "brand": "Polymaker",
+    "type": "Fiberon",
+    "subtype": "PA6-CF",
+    "display_name": "Polymaker Fiberon PA6-CF"
   },
   {
-    "brand": "Panchroma",
-    "type": "PLA",
-    "subtype": "Celestial",
-    "display_name": "Panchroma PLA Celestial"
+    "brand": "Polymaker",
+    "type": "Fiberon",
+    "subtype": "PA6-GF",
+    "display_name": "Polymaker Fiberon PA6-GF"
   },
   {
-    "brand": "Panchroma",
-    "type": "PLA",
-    "subtype": "Galaxy",
-    "display_name": "Panchroma PLA Galaxy"
+    "brand": "Polymaker",
+    "type": "Fiberon",
+    "subtype": "PA612-CF",
+    "display_name": "Polymaker Fiberon PA612-CF"
   },
   {
-    "brand": "Panchroma",
-    "type": "PLA",
-    "subtype": "Glow",
-    "display_name": "Panchroma PLA Glow"
+    "brand": "Polymaker",
+    "type": "Fiberon",
+    "subtype": "PET-CF",
+    "display_name": "Polymaker Fiberon PET-CF"
   },
   {
-    "brand": "Panchroma",
-    "type": "PLA",
-    "subtype": "Luminous",
-    "display_name": "Panchroma PLA Luminous"
+    "brand": "Polymaker",
+    "type": "Fiberon",
+    "subtype": "PETG-ESD",
+    "display_name": "Polymaker Fiberon PETG-ESD"
   },
   {
-    "brand": "Panchroma",
-    "type": "PLA",
-    "subtype": "Marble",
-    "display_name": "Panchroma PLA Marble"
-  },
-  {
-    "brand": "Panchroma",
-    "type": "PLA",
-    "subtype": "Matte",
-    "display_name": "Panchroma PLA Matte"
-  },
-  {
-    "brand": "Panchroma",
-    "type": "PLA",
-    "subtype": "Metallic",
-    "display_name": "Panchroma PLA Metallic"
-  },
-  {
-    "brand": "Panchroma",
-    "type": "PLA",
-    "subtype": "Neon",
-    "display_name": "Panchroma PLA Neon"
-  },
-  {
-    "brand": "Panchroma",
-    "type": "PLA",
-    "subtype": "Silk",
-    "display_name": "Panchroma PLA Silk"
-  },
-  {
-    "brand": "Panchroma",
-    "type": "PLA",
-    "subtype": "Stain",
-    "display_name": "Panchroma PLA Stain"
-  },
-  {
-    "brand": "Panchroma",
-    "type": "PLA",
-    "subtype": "Starlight",
-    "display_name": "Panchroma PLA Starlight"
-  },
-  {
-    "brand": "Panchroma",
-    "type": "PLA",
-    "subtype": "Temp Shift",
-    "display_name": "Panchroma PLA Temp Shift"
-  },
-  {
-    "brand": "Panchroma",
-    "type": "PLA",
-    "subtype": "Translucent",
-    "display_name": "Panchroma PLA Translucent"
-  },
-  {
-    "brand": "Panchroma",
-    "type": "PLA",
-    "subtype": "UV Shift",
-    "display_name": "Panchroma PLA UV Shift"
-  },
-  {
-    "brand": "PolyLite",
-    "type": "ABS",
-    "subtype": "",
-    "display_name": "PolyLite ABS"
-  },
-  {
-    "brand": "PolyLite",
-    "type": "ASA",
-    "subtype": "",
-    "display_name": "PolyLite ASA"
-  },
-  {
-    "brand": "PolyLite",
-    "type": "Dual",
-    "subtype": "PLA",
-    "display_name": "PolyLite Dual PLA"
-  },
-  {
-    "brand": "PolyLite",
-    "type": "PETG",
-    "subtype": "",
-    "display_name": "PolyLite PETG"
-  },
-  {
-    "brand": "PolyLite",
-    "type": "PLA",
-    "subtype": "",
-    "display_name": "PolyLite PLA"
-  },
-  {
-    "brand": "PolyLite",
-    "type": "PLA",
-    "subtype": "Pro",
-    "display_name": "PolyLite PLA Pro"
+    "brand": "Polymaker",
+    "type": "Fiberon",
+    "subtype": "PETG-rCF",
+    "display_name": "Polymaker Fiberon PETG-rCF"
   },
   {
     "brand": "Polymaker",
     "type": "HT-PLA",
     "subtype": "",
-    "display_name": "Polymaker HT-PLA"
+    "display_name": "Polymaker HT-PLA",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Polymaker",
     "type": "HT-PLA-GF",
     "subtype": "",
-    "display_name": "Polymaker HT-PLA-GF"
+    "display_name": "Polymaker HT-PLA-GF",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
-    "brand": "PolyTerra",
-    "type": "Dual",
+    "brand": "Polymaker",
+    "type": "Panchroma",
+    "subtype": "CoPE",
+    "display_name": "Polymaker Panchroma CoPE",
+    "min_temp": 260,
+    "max_temp": 300,
+    "bed_min_temp": 100,
+    "bed_max_temp": 100
+  },
+  {
+    "brand": "Polymaker",
+    "type": "Panchroma",
     "subtype": "PLA",
-    "display_name": "PolyTerra Dual PLA"
+    "display_name": "Polymaker Panchroma PLA",
+    "min_temp": 260,
+    "max_temp": 300,
+    "bed_min_temp": 100,
+    "bed_max_temp": 100
   },
   {
-    "brand": "PolyTerra",
-    "type": "PLA",
-    "subtype": "",
-    "display_name": "PolyTerra PLA"
+    "brand": "Polymaker",
+    "type": "Panchroma",
+    "subtype": "PLA Celestial",
+    "display_name": "Polymaker Panchroma PLA Celestial",
+    "min_temp": 260,
+    "max_temp": 300,
+    "bed_min_temp": 100,
+    "bed_max_temp": 100
+  },
+  {
+    "brand": "Polymaker",
+    "type": "Panchroma",
+    "subtype": "PLA Galaxy",
+    "display_name": "Polymaker Panchroma PLA Galaxy",
+    "min_temp": 260,
+    "max_temp": 300,
+    "bed_min_temp": 100,
+    "bed_max_temp": 100
+  },
+  {
+    "brand": "Polymaker",
+    "type": "Panchroma",
+    "subtype": "PLA Glow",
+    "display_name": "Polymaker Panchroma PLA Glow",
+    "min_temp": 260,
+    "max_temp": 300,
+    "bed_min_temp": 100,
+    "bed_max_temp": 100
+  },
+  {
+    "brand": "Polymaker",
+    "type": "Panchroma",
+    "subtype": "PLA Luminous",
+    "display_name": "Polymaker Panchroma PLA Luminous",
+    "min_temp": 260,
+    "max_temp": 300,
+    "bed_min_temp": 100,
+    "bed_max_temp": 100
+  },
+  {
+    "brand": "Polymaker",
+    "type": "Panchroma",
+    "subtype": "PLA Marble",
+    "display_name": "Polymaker Panchroma PLA Marble",
+    "min_temp": 260,
+    "max_temp": 300,
+    "bed_min_temp": 100,
+    "bed_max_temp": 100
+  },
+  {
+    "brand": "Polymaker",
+    "type": "Panchroma",
+    "subtype": "PLA Matte",
+    "display_name": "Polymaker Panchroma PLA Matte",
+    "min_temp": 260,
+    "max_temp": 300,
+    "bed_min_temp": 100,
+    "bed_max_temp": 100
+  },
+  {
+    "brand": "Polymaker",
+    "type": "Panchroma",
+    "subtype": "PLA Metallic",
+    "display_name": "Polymaker Panchroma PLA Metallic",
+    "min_temp": 260,
+    "max_temp": 300,
+    "bed_min_temp": 100,
+    "bed_max_temp": 100
+  },
+  {
+    "brand": "Polymaker",
+    "type": "Panchroma",
+    "subtype": "PLA Neon",
+    "display_name": "Polymaker Panchroma PLA Neon",
+    "min_temp": 260,
+    "max_temp": 300,
+    "bed_min_temp": 100,
+    "bed_max_temp": 100
+  },
+  {
+    "brand": "Polymaker",
+    "type": "Panchroma",
+    "subtype": "PLA Silk",
+    "display_name": "Polymaker Panchroma PLA Silk",
+    "min_temp": 260,
+    "max_temp": 300,
+    "bed_min_temp": 100,
+    "bed_max_temp": 100
+  },
+  {
+    "brand": "Polymaker",
+    "type": "Panchroma",
+    "subtype": "PLA Stain",
+    "display_name": "Polymaker Panchroma PLA Stain",
+    "min_temp": 260,
+    "max_temp": 300,
+    "bed_min_temp": 100,
+    "bed_max_temp": 100
+  },
+  {
+    "brand": "Polymaker",
+    "type": "Panchroma",
+    "subtype": "PLA Starlight",
+    "display_name": "Polymaker Panchroma PLA Starlight",
+    "min_temp": 260,
+    "max_temp": 300,
+    "bed_min_temp": 100,
+    "bed_max_temp": 100
+  },
+  {
+    "brand": "Polymaker",
+    "type": "Panchroma",
+    "subtype": "PLA Temp Shift",
+    "display_name": "Polymaker Panchroma PLA Temp Shift",
+    "min_temp": 260,
+    "max_temp": 300,
+    "bed_min_temp": 100,
+    "bed_max_temp": 100
+  },
+  {
+    "brand": "Polymaker",
+    "type": "Panchroma",
+    "subtype": "PLA Translucent",
+    "display_name": "Polymaker Panchroma PLA Translucent",
+    "min_temp": 260,
+    "max_temp": 300,
+    "bed_min_temp": 100,
+    "bed_max_temp": 100
+  },
+  {
+    "brand": "Polymaker",
+    "type": "Panchroma",
+    "subtype": "PLA UV Shift",
+    "display_name": "Polymaker Panchroma PLA UV Shift",
+    "min_temp": 260,
+    "max_temp": 300,
+    "bed_min_temp": 100,
+    "bed_max_temp": 100
+  },
+  {
+    "brand": "Polymaker",
+    "type": "PolyLite",
+    "subtype": "ABS",
+    "display_name": "Polymaker PolyLite ABS"
+  },
+  {
+    "brand": "Polymaker",
+    "type": "PolyLite",
+    "subtype": "ASA",
+    "display_name": "Polymaker PolyLite ASA"
+  },
+  {
+    "brand": "Polymaker",
+    "type": "PolyLite",
+    "subtype": "Dual PLA",
+    "display_name": "Polymaker PolyLite Dual PLA"
+  },
+  {
+    "brand": "Polymaker",
+    "type": "PolyLite",
+    "subtype": "PETG",
+    "display_name": "Polymaker PolyLite PETG"
+  },
+  {
+    "brand": "Polymaker",
+    "type": "PolyLite",
+    "subtype": "PLA",
+    "display_name": "Polymaker PolyLite PLA"
+  },
+  {
+    "brand": "Polymaker",
+    "type": "PolyLite",
+    "subtype": "PLA Pro",
+    "display_name": "Polymaker PolyLite PLA Pro"
+  },
+  {
+    "brand": "Polymaker",
+    "type": "PolyTerra",
+    "subtype": "Dual PLA",
+    "display_name": "Polymaker PolyTerra Dual PLA"
+  },
+  {
+    "brand": "Polymaker",
+    "type": "PolyTerra",
+    "subtype": "PLA",
+    "display_name": "Polymaker PolyTerra PLA"
   },
   {
     "brand": "SUNLU",
@@ -795,25 +1207,41 @@
     "brand": "SUNLU",
     "type": "PETG",
     "subtype": "",
-    "display_name": "SUNLU PETG"
+    "display_name": "SUNLU PETG",
+    "min_temp": 220,
+    "max_temp": 260,
+    "bed_min_temp": 80,
+    "bed_max_temp": 80
   },
   {
     "brand": "SUNLU",
     "type": "PLA",
     "subtype": "Matte",
-    "display_name": "SUNLU PLA Matte"
+    "display_name": "SUNLU PLA Matte",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "SUNLU",
     "type": "PLA+",
     "subtype": "",
-    "display_name": "SUNLU PLA+"
+    "display_name": "SUNLU PLA+",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "SUNLU",
     "type": "PLA+",
     "subtype": "2.0",
-    "display_name": "SUNLU PLA+ 2.0"
+    "display_name": "SUNLU PLA+ 2.0",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "SUNLU",
@@ -831,24 +1259,40 @@
     "brand": "Valment",
     "type": "PLA",
     "subtype": "",
-    "display_name": "Valment PLA"
+    "display_name": "Valment PLA",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Valment",
     "type": "PLA",
     "subtype": "Galaxy",
-    "display_name": "Valment PLA Galaxy"
+    "display_name": "Valment PLA Galaxy",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Valment",
     "type": "PLA",
     "subtype": "Silk",
-    "display_name": "Valment PLA Silk"
+    "display_name": "Valment PLA Silk",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   },
   {
     "brand": "Valment",
     "type": "PLA-CF",
     "subtype": "",
-    "display_name": "Valment PLA-CF"
+    "display_name": "Valment PLA-CF",
+    "min_temp": 190,
+    "max_temp": 240,
+    "bed_min_temp": 55,
+    "bed_max_temp": 55
   }
 ]
