@@ -1,6 +1,6 @@
 ﻿# snOrca OpenSpool
 
-Community fork of **Snapmaker Orca** that adds **OpenSpool** tag support for Snapmaker U1 (and other setups that report OpenSpool-compatible spool metadata).
+Community fork of **Snapmaker Orca** that adds **OpenSpool** tag support for Snapmaker U1 running custom **paxx12** firmware (and other setups that report OpenSpool-compatible spool metadata).
 
 Based on Snapmaker Orca `2.2.1`.
 
