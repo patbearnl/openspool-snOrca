@@ -358,7 +358,22 @@ private fun App(
         rebuildPayload()
     }
 
-    Scaffold(topBar = { LargeTopAppBar(title = { Text("snOrca OpenSpool") }) }) { padding ->
+    Scaffold(
+        topBar = {
+            LargeTopAppBar(
+                title = {
+                    Column {
+                        Text("snOrca OpenSpool")
+                        Text(
+                            "NFC Tag Writer",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                },
+            )
+        },
+    ) { padding ->
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background,
