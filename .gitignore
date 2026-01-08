@@ -47,3 +47,4 @@ android/openspool-tag-writer/.gradle/
 android/openspool-tag-writer/.android-sdk/
 android/openspool-tag-writer/.buildtools/
 android/openspool-tag-writer/local.properties
+release-assets/

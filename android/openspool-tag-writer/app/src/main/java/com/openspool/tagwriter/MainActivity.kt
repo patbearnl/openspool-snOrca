@@ -25,8 +25,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
@@ -35,7 +39,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -43,6 +46,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -320,7 +324,7 @@ private fun App(
     onRegisterWriteResultListener { result ->
         lastWriteStatus =
             when (result) {
-                is WriteResult.Success -> "Wrote ${result.bytesWritten} bytes ✅"
+                is WriteResult.Success -> "Wrote ${result.bytesWritten} bytes."
                 is WriteResult.Failure -> "Write failed: ${result.message}"
             }
     }
@@ -328,7 +332,7 @@ private fun App(
     onRegisterReadResultListener { result ->
         lastReadStatus =
             when (result) {
-                is ReadResult.Success -> "Read ${result.bytesRead} bytes ✅"
+                is ReadResult.Success -> "Read ${result.bytesRead} bytes."
                 is ReadResult.Failure -> "Read failed: ${result.message}"
             }
     }
@@ -349,9 +353,12 @@ private fun App(
     }
 
     val previewColor = Color(red, green, blue)
-    rebuildPayload()
 
-    Scaffold(topBar = { TopAppBar(title = { Text("snOrca OpenSpool Ntag Writer") }) }) { padding ->
+    LaunchedEffect(Unit) {
+        rebuildPayload()
+    }
+
+    Scaffold(topBar = { LargeTopAppBar(title = { Text("snOrca OpenSpool") }) }) { padding ->
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background,
@@ -376,239 +383,263 @@ private fun App(
                         .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-                        Button(
-                            onClick = { presetDialogOpen = true },
-                            modifier = Modifier.weight(1f),
-                        ) {
-                            Text("Choose preset")
-                        }
-                        Button(
-                            onClick = {
-                                brand = "Generic"
-                                type = "PLA"
-                                subtype = ""
-                                rebuildPayload()
-                            },
-                            modifier = Modifier.weight(1f),
-                        ) {
-                            Text("Generic PLA")
-                        }
-                    }
+                    ElevatedCard(modifier = Modifier.fillMaxWidth()) {
+                        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                            Text("Presets & library", style = MaterialTheme.typography.titleMedium)
 
-                    if (spoolLibrary.isNotEmpty()) {
-                        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-                            Button(
-                                onClick = { libraryDialogOpen = true },
-                                modifier = Modifier.weight(1f),
-                            ) {
-                                Text("My spools (${spoolLibrary.size})")
+                            Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
+                                FilledTonalButton(
+                                    onClick = { presetDialogOpen = true },
+                                    modifier = Modifier.weight(1f),
+                                ) {
+                                    Text("Choose preset")
+                                }
+                                OutlinedButton(
+                                    onClick = {
+                                        brand = "Generic"
+                                        type = "PLA"
+                                        subtype = ""
+                                        rebuildPayload()
+                                    },
+                                    modifier = Modifier.weight(1f),
+                                ) {
+                                    Text("Generic PLA")
+                                }
                             }
-                            TextButton(
-                                onClick = {
-                                    SpoolLibrary.clear(context)
-                                    spoolLibrary = emptyList()
-                                    lastImportStatus = "Cleared saved spools."
+
+                            if (spoolLibrary.isNotEmpty()) {
+                                Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
+                                    FilledTonalButton(
+                                        onClick = { libraryDialogOpen = true },
+                                        modifier = Modifier.weight(1f),
+                                    ) {
+                                        Text("My spools (${spoolLibrary.size})")
+                                    }
+                                    TextButton(
+                                        onClick = {
+                                            SpoolLibrary.clear(context)
+                                            spoolLibrary = emptyList()
+                                            lastImportStatus = "Cleared saved spools."
+                                        },
+                                        modifier = Modifier.weight(1f),
+                                    ) {
+                                        Text("Clear")
+                                    }
+                                }
+                            }
+
+                            OutlinedTextField(
+                                value = importBrandOverride,
+                                onValueChange = {
+                                    importBrandOverride = it
+                                    ImportSettings.setBrandOverride(context, it)
                                 },
-                                modifier = Modifier.weight(1f),
+                                label = { Text("Import brand override (optional)") },
+                                supportingText = { Text("If set, imported spools will use this brand (vendor).") },
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+
+                            Button(
+                                onClick = { importLauncher.launch(arrayOf("*/*")) },
+                                modifier = Modifier.fillMaxWidth(),
                             ) {
-                                Text("Clear saved")
+                                Text("Import spools (CSV/JSON)")
+                            }
+
+                            lastImportStatus?.let { Text(it, style = MaterialTheme.typography.bodySmall) }
+                        }
+                    }
+
+                    ElevatedCard(modifier = Modifier.fillMaxWidth()) {
+                        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                            Text("NFC", style = MaterialTheme.typography.titleMedium)
+                            Text(
+                                text =
+                                    if (!nfcAvailable) {
+                                        "NFC not available on this device."
+                                    } else if (isArmed) {
+                                        if (nfcMode == NfcMode.WRITE) {
+                                            "Ready to WRITE. Tap a tag to save the current values."
+                                        } else {
+                                            "Ready to READ. Tap a tag to load values into the form."
+                                        }
+                                    } else {
+                                        "NFC is off. Press Start to arm NFC."
+                                    },
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+
+                            FilledTonalButton(
+                                onClick = {
+                                    isArmed = !isArmed
+                                    onArmChanged(isArmed)
+                                },
+                                enabled = nfcAvailable,
+                                modifier = Modifier.fillMaxWidth(),
+                            ) {
+                                Text(if (isArmed) "Stop NFC" else "Start NFC")
+                            }
+
+                            if (lastWriteStatus != null) {
+                                Text(text = lastWriteStatus!!, style = MaterialTheme.typography.bodySmall)
+                            }
+                            if (lastReadStatus != null) {
+                                Text(text = lastReadStatus!!, style = MaterialTheme.typography.bodySmall)
                             }
                         }
                     }
 
-                    OutlinedTextField(
-                        value = importBrandOverride,
-                        onValueChange = {
-                            importBrandOverride = it
-                            ImportSettings.setBrandOverride(context, it)
-                        },
-                        label = { Text("Import brand override (optional)") },
-                        supportingText = { Text("If set, imported spools will use this brand (vendor) instead of the file's brand.") },
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-
-                    Button(
-                        onClick = { importLauncher.launch(arrayOf("*/*")) },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Text("Import spools (CSV/JSON)")
-                    }
-
-                    lastImportStatus?.let { Text(it, style = MaterialTheme.typography.bodySmall) }
-
-                    Text(
-                        text =
-                            if (!nfcAvailable) {
-                                "NFC not available on this device."
-                            } else {
-                                if (isArmed) {
-                                    if (nfcMode == NfcMode.WRITE) {
-                                        "NFC armed (WRITE). Tap a tag to write the current values."
-                                    } else {
-                                        "NFC armed (READ). Tap a tag to load values into the form."
-                                    }
-                                } else {
-                                    "NFC is off. Press Start to arm NFC."
-                                }
-                            },
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-
-                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-                        Button(
-                            onClick = {
-                                isArmed = !isArmed
-                                onArmChanged(isArmed)
-                            },
-                            enabled = nfcAvailable,
-                            modifier = Modifier.weight(1f),
-                        ) {
-                            Text(if (isArmed) "Stop NFC" else "Start NFC")
+                    ElevatedCard(modifier = Modifier.fillMaxWidth()) {
+                        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                            Text("Spool fields", style = MaterialTheme.typography.titleMedium)
+                            OutlinedTextField(
+                                value = brand,
+                                onValueChange = { brand = it; rebuildPayload() },
+                                label = { Text("Brand") },
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+                            OutlinedTextField(
+                                value = type,
+                                onValueChange = { type = it; rebuildPayload() },
+                                label = { Text("Type") },
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+                            OutlinedTextField(
+                                value = subtype,
+                                onValueChange = { subtype = it; rebuildPayload() },
+                                label = { Text("Subtype (optional)") },
+                                modifier = Modifier.fillMaxWidth(),
+                            )
                         }
                     }
 
-                    if (lastWriteStatus != null) {
-                        Text(text = lastWriteStatus!!, color = MaterialTheme.colorScheme.primary)
-                    }
-                    if (lastReadStatus != null) {
-                        Text(text = lastReadStatus!!, color = MaterialTheme.colorScheme.primary)
-                    }
+                    ElevatedCard(modifier = Modifier.fillMaxWidth()) {
+                        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                            Text("Temperatures", style = MaterialTheme.typography.titleMedium)
 
-                    OutlinedTextField(
-                        value = brand,
-                        onValueChange = { brand = it; rebuildPayload() },
-                        label = { Text("Brand") },
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                    OutlinedTextField(
-                        value = type,
-                        onValueChange = { type = it; rebuildPayload() },
-                        label = { Text("Type") },
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                    OutlinedTextField(
-                        value = subtype,
-                        onValueChange = { subtype = it; rebuildPayload() },
-                        label = { Text("Subtype (optional)") },
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-
-                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        OutlinedTextField(
-                            value = minTempText,
-                            onValueChange = { minTempText = it; rebuildPayload() },
-                            label = { Text("Min nozzle °C") },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            modifier = Modifier.weight(1f),
-                        )
-                        OutlinedTextField(
-                            value = maxTempText,
-                            onValueChange = { maxTempText = it; rebuildPayload() },
-                            label = { Text("Max nozzle °C") },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            modifier = Modifier.weight(1f),
-                        )
-                    }
-                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        OutlinedTextField(
-                            value = bedMinTempText,
-                            onValueChange = { bedMinTempText = it; rebuildPayload() },
-                            label = { Text("Min bed °C") },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            modifier = Modifier.weight(1f),
-                        )
-                        OutlinedTextField(
-                            value = bedMaxTempText,
-                            onValueChange = { bedMaxTempText = it; rebuildPayload() },
-                            label = { Text("Max bed °C") },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            modifier = Modifier.weight(1f),
-                        )
-                    }
-
-                    Text("Color", style = MaterialTheme.typography.titleMedium)
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .size(42.dp)
-                                .background(previewColor),
-                        )
-                        OutlinedTextField(
-                            value = colorHex,
-                            onValueChange = {
-                                colorHex = it
-                                val normalized = ColorUtils.normalizeHex(it)
-                                if (normalized != null) {
-                                    ColorUtils.hexToColor(normalized)?.let { c ->
-                                        red = (c.red * 255f).toInt()
-                                        green = (c.green * 255f).toInt()
-                                        blue = (c.blue * 255f).toInt()
-                                    }
-                                    rebuildPayload()
-                                }
-                            },
-                            label = { Text("Hex (#RRGGBB)") },
-                            modifier = Modifier.weight(1f),
-                        )
-                    }
-
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text("R: $red")
-                        Slider(
-                            value = red.toFloat(),
-                            onValueChange = {
-                                red = it.toInt()
-                                colorHex = ColorUtils.rgbToHex(red, green, blue)
-                                rebuildPayload()
-                            },
-                            valueRange = 0f..255f,
-                        )
-                        Text("G: $green")
-                        Slider(
-                            value = green.toFloat(),
-                            onValueChange = {
-                                green = it.toInt()
-                                colorHex = ColorUtils.rgbToHex(red, green, blue)
-                                rebuildPayload()
-                            },
-                            valueRange = 0f..255f,
-                        )
-                        Text("B: $blue")
-                        Slider(
-                            value = blue.toFloat(),
-                            onValueChange = {
-                                blue = it.toInt()
-                                colorHex = ColorUtils.rgbToHex(red, green, blue)
-                                rebuildPayload()
-                            },
-                            valueRange = 0f..255f,
-                        )
-                    }
-
-                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-                        Button(onClick = onLaunchScan, modifier = Modifier.weight(1f)) {
-                            Text("Scan color (camera)")
+                            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                                OutlinedTextField(
+                                    value = minTempText,
+                                    onValueChange = { minTempText = it; rebuildPayload() },
+                                    label = { Text("Nozzle min (\u00B0C)") },
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                    modifier = Modifier.weight(1f),
+                                )
+                                OutlinedTextField(
+                                    value = maxTempText,
+                                    onValueChange = { maxTempText = it; rebuildPayload() },
+                                    label = { Text("Nozzle max (\u00B0C)") },
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                    modifier = Modifier.weight(1f),
+                                )
+                            }
+                            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                                OutlinedTextField(
+                                    value = bedMinTempText,
+                                    onValueChange = { bedMinTempText = it; rebuildPayload() },
+                                    label = { Text("Bed min (\u00B0C)") },
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                    modifier = Modifier.weight(1f),
+                                )
+                                OutlinedTextField(
+                                    value = bedMaxTempText,
+                                    onValueChange = { bedMaxTempText = it; rebuildPayload() },
+                                    label = { Text("Bed max (\u00B0C)") },
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                    modifier = Modifier.weight(1f),
+                                )
+                            }
                         }
-                        Button(
-                            onClick = {
-                                brand = "Generic"
-                                type = "PLA"
-                                subtype = ""
-                                minTempText = "190"
-                                maxTempText = "220"
-                                bedMinTempText = "50"
-                                bedMaxTempText = "60"
-                                red = 255; green = 0; blue = 0
-                                colorHex = "#FF0000"
-                                rebuildPayload()
-                            },
-                            modifier = Modifier.weight(1f),
-                        ) {
-                            Text("Reset")
+                    }
+
+                    ElevatedCard(modifier = Modifier.fillMaxWidth()) {
+                        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                            Text("Color", style = MaterialTheme.typography.titleMedium)
+
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(48.dp)
+                                        .clip(MaterialTheme.shapes.medium)
+                                        .background(previewColor),
+                                )
+                                OutlinedTextField(
+                                    value = colorHex,
+                                    onValueChange = {
+                                        colorHex = it
+                                        val normalized = ColorUtils.normalizeHex(it)
+                                        if (normalized != null) {
+                                            ColorUtils.hexToColor(normalized)?.let { c ->
+                                                red = (c.red * 255f).toInt()
+                                                green = (c.green * 255f).toInt()
+                                                blue = (c.blue * 255f).toInt()
+                                            }
+                                            rebuildPayload()
+                                        }
+                                    },
+                                    label = { Text("Hex (#RRGGBB)") },
+                                    modifier = Modifier.weight(1f),
+                                )
+                            }
+
+                            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Text("R: $red", style = MaterialTheme.typography.bodySmall)
+                                Slider(
+                                    value = red.toFloat(),
+                                    onValueChange = {
+                                        red = it.toInt()
+                                        colorHex = ColorUtils.rgbToHex(red, green, blue)
+                                        rebuildPayload()
+                                    },
+                                    valueRange = 0f..255f,
+                                )
+                                Text("G: $green", style = MaterialTheme.typography.bodySmall)
+                                Slider(
+                                    value = green.toFloat(),
+                                    onValueChange = {
+                                        green = it.toInt()
+                                        colorHex = ColorUtils.rgbToHex(red, green, blue)
+                                        rebuildPayload()
+                                    },
+                                    valueRange = 0f..255f,
+                                )
+                                Text("B: $blue", style = MaterialTheme.typography.bodySmall)
+                                Slider(
+                                    value = blue.toFloat(),
+                                    onValueChange = {
+                                        blue = it.toInt()
+                                        colorHex = ColorUtils.rgbToHex(red, green, blue)
+                                        rebuildPayload()
+                                    },
+                                    valueRange = 0f..255f,
+                                )
+                            }
+
+                            Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
+                                FilledTonalButton(onClick = onLaunchScan, modifier = Modifier.weight(1f)) {
+                                    Text("Scan color")
+                                }
+                                OutlinedButton(
+                                    onClick = {
+                                        brand = "Generic"
+                                        type = "PLA"
+                                        subtype = ""
+                                        minTempText = "190"
+                                        maxTempText = "220"
+                                        bedMinTempText = "50"
+                                        bedMaxTempText = "60"
+                                        red = 255; green = 0; blue = 0
+                                        colorHex = "#FF0000"
+                                        rebuildPayload()
+                                    },
+                                    modifier = Modifier.weight(1f),
+                                ) {
+                                    Text("Reset")
+                                }
+                            }
                         }
                     }
 
