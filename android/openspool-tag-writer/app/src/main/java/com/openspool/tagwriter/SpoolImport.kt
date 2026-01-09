@@ -7,6 +7,7 @@ data class ImportedSpool(
     val id: String,
     val displayName: String,
     val tagData: SpoolTagData,
+    val applyBrandOverrideOnWrite: Boolean = true,
 )
 
 object SpoolImport {

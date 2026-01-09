@@ -21,10 +21,18 @@ object SpoolLibrary {
                     val obj = arr.optJSONObject(i) ?: continue
                     val id = obj.optString("id", "").trim()
                     val displayName = obj.optString("display_name", "").trim()
+                    val applyOverride = obj.optBoolean("apply_brand_override_on_write", true)
                     val tagObj = obj.optJSONObject("tag") ?: continue
                     val tag = SpoolTagData.fromJsonString(tagObj.toString()).getOrNull() ?: continue
                     if (id.isBlank() || displayName.isBlank()) continue
-                    add(ImportedSpool(id = id, displayName = displayName, tagData = tag))
+                    add(
+                        ImportedSpool(
+                            id = id,
+                            displayName = displayName,
+                            tagData = tag,
+                            applyBrandOverrideOnWrite = applyOverride,
+                        ),
+                    )
                 }
             }
         }.getOrElse { emptyList() }
@@ -37,6 +45,7 @@ object SpoolLibrary {
                 val obj = JSONObject()
                 obj.put("id", spool.id)
                 obj.put("display_name", spool.displayName)
+                obj.put("apply_brand_override_on_write", spool.applyBrandOverrideOnWrite)
                 obj.put("tag", JSONObject(spool.tagData.toJsonString()))
                 arr.put(obj)
             }
@@ -50,4 +59,3 @@ object SpoolLibrary {
 
     private fun file(context: Context): File = File(context.filesDir, FILE_NAME)
 }
-

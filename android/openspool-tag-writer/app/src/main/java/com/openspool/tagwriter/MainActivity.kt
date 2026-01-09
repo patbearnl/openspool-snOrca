@@ -35,6 +35,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -66,6 +67,7 @@ class MainActivity : ComponentActivity() {
     private var nfcArmed: Boolean = false
 
     private var currentPayloadJson: String = SpoolTagData(colorHex = "#FF0000").toJsonString()
+    private var currentWriteBrandOverride: String? = null
     private var onWriteResult: ((WriteResult) -> Unit)? = null
     private var onReadResult: ((ReadResult) -> Unit)? = null
     private var onTagDataLoaded: ((SpoolTagData) -> Unit)? = null
@@ -81,7 +83,12 @@ class MainActivity : ComponentActivity() {
     private val readerCallback = NfcAdapter.ReaderCallback { tag: Tag ->
         when (currentMode) {
             NfcMode.WRITE -> {
-                val json = currentPayloadJson
+                val json =
+                    runCatching {
+                        val parsed = SpoolTagData.fromJsonString(currentPayloadJson).getOrNull() ?: return@runCatching currentPayloadJson
+                        val override = currentWriteBrandOverride?.trim().orEmpty()
+                        if (override.isBlank()) currentPayloadJson else parsed.copy(brand = override).toJsonString()
+                    }.getOrElse { currentPayloadJson }
                 val result = NdefWriter.writeJson(tag, json)
                 runOnUiThread { onWriteResult?.invoke(result) }
             }
@@ -104,6 +111,7 @@ class MainActivity : ComponentActivity() {
             OpenSpoolTagWriterTheme {
                 App(
                     onUpdatePayloadJson = { currentPayloadJson = it },
+                    onUpdateWriteBrandOverride = { currentWriteBrandOverride = it },
                     onModeChanged = { currentMode = it },
                     onArmChanged = {
                         nfcArmed = it
@@ -149,6 +157,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun App(
     onUpdatePayloadJson: (String) -> Unit,
+    onUpdateWriteBrandOverride: (String?) -> Unit,
     onModeChanged: (NfcMode) -> Unit,
     onArmChanged: (Boolean) -> Unit,
     onRegisterWriteResultListener: ((WriteResult) -> Unit) -> Unit,
@@ -187,6 +196,8 @@ private fun App(
     var spoolLibrary by remember { mutableStateOf<List<ImportedSpool>>(emptyList()) }
     var lastImportStatus by remember { mutableStateOf<String?>(null) }
     var importBrandOverride by remember { mutableStateOf("") }
+    var selectedSpoolId by remember { mutableStateOf<String?>(null) }
+    var applyBrandOverrideOnWrite by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
         spoolLibrary = SpoolLibrary.load(context)
@@ -198,24 +209,14 @@ private fun App(
         return if (v.isBlank()) null else v
     }
 
-    fun applyBrandOverrideToTag(tag: SpoolTagData): SpoolTagData {
-        val override = normalizeBrandOverride() ?: return tag
-        return tag.copy(brand = override)
+    fun currentWriteBrand(): String? {
+        if (!applyBrandOverrideOnWrite) return null
+        return normalizeBrandOverride()
     }
 
-    fun applyBrandOverrideToSpools(spools: List<ImportedSpool>): List<ImportedSpool> {
-        val override = normalizeBrandOverride() ?: return spools
-        return spools.map { spool ->
-            val oldBrand = spool.tagData.brand.trim()
-            val newTag = spool.tagData.copy(brand = override)
-            val newDisplayName =
-                if (oldBrand.isNotBlank() && spool.displayName.startsWith(oldBrand + " ", ignoreCase = true)) {
-                    override + " " + spool.displayName.drop(oldBrand.length + 1)
-                } else {
-                    override + " " + spool.displayName
-                }
-            spool.copy(displayName = newDisplayName, tagData = newTag)
-        }
+    fun applyWriteBrandOverride(tag: SpoolTagData): SpoolTagData {
+        val override = currentWriteBrand() ?: return tag
+        return tag.copy(brand = override)
     }
 
     fun defaultTempsForType(type: String): Temps? {
@@ -261,6 +262,7 @@ private fun App(
                 bedMaxTemp = bedMaxTemp,
             )
         onUpdatePayloadJson(payload.toJsonString())
+        onUpdateWriteBrandOverride(currentWriteBrand())
     }
 
     fun applyTagData(tag: SpoolTagData) {
@@ -303,14 +305,15 @@ private fun App(
             when (result) {
                 is ImportResult.Single -> {
                     lastImportStatus = "Imported OpenSpool JSON."
-                    applyTagData(applyBrandOverrideToTag(result.tagData))
+                    selectedSpoolId = null
+                    applyBrandOverrideOnWrite = true
+                    applyTagData(result.tagData)
                 }
 
                 is ImportResult.Multiple -> {
-                    val spools = applyBrandOverrideToSpools(result.spools)
-                    importedSpools = spools
-                    spoolLibrary = spools
-                    SpoolLibrary.save(context, spools)
+                    importedSpools = result.spools
+                    spoolLibrary = result.spools
+                    SpoolLibrary.save(context, result.spools)
                     importDialogOpen = true
                     lastImportStatus = "Imported ${result.spools.size} spools. Choose one."
                 }
@@ -450,9 +453,46 @@ private fun App(
                                     ImportSettings.setBrandOverride(context, it)
                                 },
                                 label = { Text("Import brand override (optional)") },
-                                supportingText = { Text("If set, imported spools will use this brand (vendor).") },
+                                supportingText = { Text("Used only when writing to a tag if the toggle below is enabled.") },
                                 modifier = Modifier.fillMaxWidth(),
                             )
+
+                            val brandOverrideText = normalizeBrandOverride()
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                modifier = Modifier.fillMaxWidth(),
+                            ) {
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text("Apply override on WRITE", style = MaterialTheme.typography.titleSmall)
+                                    Text(
+                                        text =
+                                            if (applyBrandOverrideOnWrite && !brandOverrideText.isNullOrBlank()) {
+                                                "Will write tag brand as: $brandOverrideText"
+                                            } else if (applyBrandOverrideOnWrite) {
+                                                "Enabled, but override is empty."
+                                            } else {
+                                                "Tag keeps the current brand."
+                                            },
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                }
+                                Switch(
+                                    checked = applyBrandOverrideOnWrite,
+                                    onCheckedChange = { checked ->
+                                        applyBrandOverrideOnWrite = checked
+                                        onUpdateWriteBrandOverride(currentWriteBrand())
+                                        val id = selectedSpoolId ?: return@Switch
+                                        val updated =
+                                            spoolLibrary.map { spool ->
+                                                if (spool.id == id) spool.copy(applyBrandOverrideOnWrite = checked) else spool
+                                            }
+                                        spoolLibrary = updated
+                                        SpoolLibrary.save(context, updated)
+                                    },
+                                )
+                            }
 
                             Button(
                                 onClick = { importLauncher.launch(arrayOf("*/*")) },
@@ -679,6 +719,7 @@ private fun App(
             onDismiss = { presetDialogOpen = false },
             onPick = { preset ->
                 presetDialogOpen = false
+                selectedSpoolId = null
                 brand = preset.brand
                 type = preset.type
                 subtype = preset.subtype
@@ -687,6 +728,7 @@ private fun App(
                 preset.bedMinTemp?.let { bedMinTempText = it.toString() }
                 preset.bedMaxTemp?.let { bedMaxTempText = it.toString() }
                 rebuildPayload()
+                onUpdateWriteBrandOverride(currentWriteBrand())
             },
         )
     }
@@ -697,7 +739,10 @@ private fun App(
             onDismiss = { importDialogOpen = false },
             onPick = { spool ->
                 importDialogOpen = false
+                selectedSpoolId = spool.id
+                applyBrandOverrideOnWrite = spool.applyBrandOverrideOnWrite
                 applyTagData(spool.tagData)
+                onUpdateWriteBrandOverride(currentWriteBrand())
             },
         )
     }
@@ -708,7 +753,10 @@ private fun App(
             onDismiss = { libraryDialogOpen = false },
             onPick = { spool ->
                 libraryDialogOpen = false
+                selectedSpoolId = spool.id
+                applyBrandOverrideOnWrite = spool.applyBrandOverrideOnWrite
                 applyTagData(spool.tagData)
+                onUpdateWriteBrandOverride(currentWriteBrand())
             },
         )
     }
