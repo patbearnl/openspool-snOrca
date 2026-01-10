@@ -52,7 +52,11 @@ If this project helps, you can support development:
 
 ## Android tag writer
 
-An Android app is included to read/write OpenSpool JSON onto NFC tags.
+Android tag writer lives in a separate repository:
+
+- `https://github.com/patbearnl/Android-Openspool-Ntag-Writer-with-JSon-cvs-import-support-for-3DFP-and-Spoolman-import-supoort`
+
+It reads/writes OpenSpool JSON onto NFC tags.
 
 - Download from Releases: look for `snOrca-openspool-ntag.apk`
 - Modes: Read (load + edit), Write (tap tag to save)
@@ -73,6 +77,12 @@ If the Windows app won't start, install these prerequisites:
 - MSVC x64 Redistributable: `https://aka.ms/vs/17/release/vc_redist.x64.exe`
 
 Upgrades should not touch your `%APPDATA%\\Snapmaker_Orca\\user\\` folder.
+
+## Tools
+
+The Windows profile/spool converter lives in a separate repository:
+
+- `https://github.com/patbearnl/3DFP-Openspool-Spoolman-2-orca-Profiles-Converter`
 
 ## Building (Windows)
 
