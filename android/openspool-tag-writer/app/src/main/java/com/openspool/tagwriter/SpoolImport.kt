@@ -94,6 +94,7 @@ object SpoolImport {
         val type = OpenSpoolTypeMapper.normalize(material) ?: material
         val colors = ColorUtils.extractHexColors(rgbRaw)
         val colorHex = colors.firstOrNull() ?: "#FFFFFF"
+        val multiColorHexes = if (colors.size > 1) colors.drop(1) else emptyList()
 
         val subtype =
             when {
@@ -110,6 +111,7 @@ object SpoolImport {
                 type = type,
                 subtype = subtype,
                 colorHex = colorHex,
+                multiColorHexes = multiColorHexes,
                 minTemp = temps?.minTemp ?: 190,
                 maxTemp = temps?.maxTemp ?: 220,
                 bedMinTemp = temps?.bedMinTemp ?: 50,
@@ -163,18 +165,27 @@ object SpoolImport {
 
         val type = OpenSpoolTypeMapper.normalize(material) ?: material
 
-        val colorHex =
+        val (colorHex, multiColorHexes) =
             run {
                 val hexes = obj.optJSONArray("color_hexes")
-                val fromHexes =
+                val parsedHexes =
                     if (hexes != null && hexes.length() > 0) {
-                        ColorUtils.normalizeHex(hexes.optString(0, ""))
+                        buildList {
+                            for (i in 0 until hexes.length()) {
+                                val hex = ColorUtils.normalizeHex(hexes.optString(i, "")) ?: continue
+                                add(hex)
+                            }
+                        }
                     } else {
-                        null
+                        emptyList()
                     }
-                fromHexes
-                    ?: ColorUtils.normalizeHex(obj.optString("color_hex", ""))
-                    ?: "#FFFFFF"
+
+                val primary =
+                    parsedHexes.firstOrNull()
+                        ?: ColorUtils.normalizeHex(obj.optString("color_hex", ""))
+                        ?: "#FFFFFF"
+                val extras = if (parsedHexes.size > 1) parsedHexes.drop(1) else emptyList()
+                primary to extras
             }
 
         val subtype =
@@ -206,6 +217,7 @@ object SpoolImport {
                 type = type,
                 subtype = subtype,
                 colorHex = colorHex,
+                multiColorHexes = multiColorHexes,
                 minTemp = minTemp,
                 maxTemp = maxTemp,
                 bedMinTemp = bedMinTemp,

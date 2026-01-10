@@ -40,9 +40,11 @@ public static class SnOrcaProfileFactory
         var settingId = $"{id}_0";
 
         var colorHex = ExtractFirstHex(spool.Rgb) ?? "#FFFFFF";
+        var extraColors = ExtractHexes(spool.Rgb).Skip(1).ToList();
 
         var notes = new List<string>();
         notes.Add($"3DFP import: {list.Count} spool(s)");
+        if (extraColors.Count > 0) notes.Add($"Multi colors: {string.Join(", ", extraColors)}");
 
         // Keep the URLs from the representative spool, and mention that there may be multiple.
         if (!string.IsNullOrWhiteSpace(spool.SpoolUrl)) notes.Add($"SpoolDB: {spool.SpoolUrl}");
@@ -76,6 +78,7 @@ public static class SnOrcaProfileFactory
         var subType = TypeMapping.BuildSubType(spool.Material, spool.MaterialType, type);
 
         var colorHex = ExtractFirstHex(spool.Rgb) ?? "#FFFFFF";
+        var extraColors = ExtractHexes(spool.Rgb).Skip(1).ToList();
         var idSuffix = TypeMapping.ShortIdSuffix(spool.Id);
 
         var displayName = BuildName(vendor, type, subType, spool.ColorName, idSuffix);
@@ -84,6 +87,7 @@ public static class SnOrcaProfileFactory
 
         var notes = new List<string>();
         notes.Add($"3DFP id: {spool.Id}");
+        if (extraColors.Count > 0) notes.Add($"Multi colors: {string.Join(", ", extraColors)}");
         if (!string.IsNullOrWhiteSpace(spool.SpoolUrl)) notes.Add($"SpoolDB: {spool.SpoolUrl}");
         if (!string.IsNullOrWhiteSpace(spool.FilamentUrl)) notes.Add($"3DFP: {spool.FilamentUrl}");
         if (spool.RemainingGrams.HasValue) notes.Add($"Remaining: {spool.RemainingGrams.Value} g");
@@ -131,6 +135,22 @@ public static class SnOrcaProfileFactory
         if (!m.Success) return null;
         var raw = m.Value.Trim().TrimStart('#').ToUpperInvariant();
         return $"#{raw}";
+    }
+
+    private static IReadOnlyList<string> ExtractHexes(string input)
+    {
+        if (string.IsNullOrWhiteSpace(input)) return Array.Empty<string>();
+        var matches = HexColorRegex.Matches(input);
+        if (matches.Count == 0) return Array.Empty<string>();
+        var list = new List<string>(matches.Count);
+        foreach (Match m in matches)
+        {
+            if (!m.Success) continue;
+            var raw = m.Value.Trim().TrimStart('#').ToUpperInvariant();
+            if (raw.Length != 6) continue;
+            list.Add($"#{raw}");
+        }
+        return list;
     }
 
     private static void ApplyTempOverrides(Dictionary<string, JsonElement> extraConfig, SpoolRecord spool)

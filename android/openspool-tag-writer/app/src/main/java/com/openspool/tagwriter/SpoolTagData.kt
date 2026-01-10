@@ -9,6 +9,13 @@ data class SpoolTagData(
     val type: String = "PLA",
     val subtype: String = "",
     val colorHex: String = "#FFFFFF",
+    /**
+     * Additional colors for multi-color / rainbow spools.
+     *
+     * Stored as normalized hex colors (e.g. "#FF00FF") in-memory, but written to OpenSpool JSON
+     * as a comma-separated list without the leading '#', per common community practice.
+     */
+    val multiColorHexes: List<String> = emptyList(),
     val minTemp: Int = 190,
     val maxTemp: Int = 220,
     val bedMinTemp: Int = 50,
@@ -26,6 +33,8 @@ data class SpoolTagData(
                 val subtype = obj.optString("subtype", "")
                 val colorHexRaw = obj.optString("color_hex", "#FFFFFF")
                 val colorHex = ColorUtils.normalizeHex(colorHexRaw) ?: "#FFFFFF"
+                val multiColorHexesRaw = obj.optString("multi_color_hexes", "")
+                val multiColorHexes = ColorUtils.extractHexColors(multiColorHexesRaw)
 
                 val minTemp = obj.optInt("min_temp", 190)
                 val maxTemp = obj.optInt("max_temp", 220)
@@ -39,6 +48,7 @@ data class SpoolTagData(
                     type = type,
                     subtype = subtype,
                     colorHex = colorHex,
+                    multiColorHexes = multiColorHexes,
                     minTemp = minTemp,
                     maxTemp = maxTemp,
                     bedMinTemp = bedMinTemp,
@@ -55,7 +65,15 @@ data class SpoolTagData(
         obj.put("brand", brand)
         obj.put("type", type)
         if (subtype.isNotBlank()) obj.put("subtype", subtype)
-        obj.put("color_hex", colorHex)
+        obj.put("color_hex", colorHex.removePrefix("#"))
+        if (multiColorHexes.isNotEmpty()) {
+            obj.put(
+                "multi_color_hexes",
+                multiColorHexes
+                    .mapNotNull { ColorUtils.normalizeHex(it) }
+                    .joinToString(",") { it.removePrefix("#") },
+            )
+        }
         obj.put("min_temp", minTemp)
         obj.put("max_temp", maxTemp)
         obj.put("bed_min_temp", bedMinTemp)
