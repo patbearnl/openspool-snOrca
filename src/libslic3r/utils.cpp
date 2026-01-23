@@ -1162,7 +1162,9 @@ std::string string_printf(const char *format, ...)
 
 std::string header_slic3r_generated()
 {
-	return std::string(SLIC3R_APP_NAME " " Snapmaker_VERSION);
+	// Compatibility: some Snapmaker U1 UI paths identify "known" G-code files by the generator string.
+	// Keep the on-disk G-code header aligned with Snapmaker Orca while SnOrca branding stays in the app UI.
+	return std::string("Snapmaker Orca " Snapmaker_VERSION);
 }
 
 std::string header_gcodeviewer_generated()
