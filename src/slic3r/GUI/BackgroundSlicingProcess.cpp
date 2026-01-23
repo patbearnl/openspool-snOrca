@@ -211,11 +211,11 @@ void BackgroundSlicingProcess::process_fff()
 			BOOST_LOG_TRIVIAL(info) << __FUNCTION__ << boost::format(" %1%: export gcode from %2% directly to %3%")%__LINE__%m_temp_output_path %m_export_path;
 		}
 		else {
-            if (m_upload_job.empty()) {
-                m_fff_print->export_gcode_from_previous_file(m_temp_output_path, m_gcode_result, [this](const ThumbnailsParams &params) {
-                    return this->render_thumbnails(params);
-                });
-            }
+            // Always re-export from the previous G-code when starting a new operation (export or upload).
+            // This ensures thumbnails and other finalized metadata are present for downstream UIs.
+            m_fff_print->export_gcode_from_previous_file(m_temp_output_path, m_gcode_result, [this](const ThumbnailsParams &params) {
+                return this->render_thumbnails(params);
+            });
             BOOST_LOG_TRIVIAL(info) << __FUNCTION__ << boost::format(" %1%: export_gcode_from_previous_file from %2% finished")%__LINE__ % m_temp_output_path;
 		}
 	}
