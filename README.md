@@ -98,6 +98,51 @@ Common build commands:
 
 After building, run `cmake --build build-vs2026 --config Release --target install` to install into the local output folder (see `HANDOFF.md` for current paths).
 
+### Building (macOS Tahoe)
+
+Tools:
+
+- XCode
+- CMake (version 3.31.x is mandatory), Git, gettext, libtool, automake, autoconf, texinfo
+
+Please follow the [Orca Slicer Build Guide](https://www.orcaslicer.com/wiki/developer-reference/How-to-build), but before running the `build_release_macos.sh` script, add 2 CMake directives to `build_release_macos.sh`, as suggested in [Steve Scargall's blog post](https://stevescargall.com/blog/2025/10/how-to-build-orcaslicer-from-source-on-macos-15-sequoia-a-step-by-step-guide/):
+```
+-DCMAKE_CXX_COMPILER=/usr/bin/g++ \
+-DCMAKE_C_COMPILER=/usr/bin/gcc
+```
+
+Now run the build script to download dependencies, but don't expect the script to succeed. When the script fails, apply the following changes to two dependencies:
+
+1. In file `.\deps\wxWidgets\patch_cotire_test_cmake_minimum_required.cmake`, wrap the Windows-specific part in an `if (WIN32) ... endif()` block (AFAIK, this part is just to ensure windows is able to expand an archive, which works on a mac out of the box). The Windows-specific part starts with a comment "# Ensure WebView2 SDK is available without relying on CMake's libarchive extraction.", add `if (WIN32)` above that comment. At the end of the file, add `endif()`. Below is an excerpt from the modified part of the file:
+```
+# ... beginning of the file, don't modify anything before
+
+if (WIN32)   # Added to make the file runnable on macos
+  # Ensure WebView2 SDK is available without relying on CMake's libarchive extraction.
+  # wxWidgets' MSW webview build expects `3rdparty/webview2/build/native/include/WebView2.h`.
+  set(_webview2_header "3rdparty/webview2/build/native/include/WebView2.h")
+  set(_webview2_version "1.0.1418.22")
+  set(_webview2_url "https://www.nuget.org/api/v2/package/Microsoft.Web.WebView2/${_webview2_version}")
+  set(_webview2_sha256 "51d2ef56196e2a9d768a6843385bcb9c6baf9ed34b2603ddb074fb4995543a99")
+
+  # ... rest of file ...
+
+  endif()
+endif()      # Added to close the if block
+```
+
+2. We also need to patch one of the OpenVDB files, which can be done with the following shell command, ran from the root of the project:
+```
+sed -i '' 's/OpT::template eval/OpT::eval/g' "deps/build/arm64/dep_OpenVDB-prefix/src/dep_OpenVDB/openvdb/openvdb/tree/NodeManager.h"
+```
+
+Now run the `.\build_release_macos.sh` script again and it should succeed.
+
+If you want to create a dmg, install `create-dmg` with `brew install create-dmg` and then run
+```
+create-dmg --volname "Snapmaker Orca Installer" --volicon "build/arm64/Snapmaker_Orca/Snapmaker Orca.app/Contents/Resources/Icon.icns" --window-pos 200 120 --window-size 800 400 --icon-size 100 --icon "Snapmaker Orca.app" 200 190 --hide-extension "Snapmaker Orca.app" --app-drop-link 600 185 "Snapmaker_Orca-OpenSpool.dmg" "build/arm64/Snapmaker_Orca/Snapmaker Orca.app"
+```
+
 ## License
 
 This project is licensed under the **GNU Affero General Public License v3.0**.
