@@ -42,6 +42,8 @@ resources/profiles/user/default
 *.code-workspace
 deps_src/build/
 .claude/
+.omc
+nul
 android/openspool-tag-writer/app/build/
 android/openspool-tag-writer/.gradle/
 android/openspool-tag-writer/.android-sdk/

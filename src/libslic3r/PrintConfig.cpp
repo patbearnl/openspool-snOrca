@@ -2319,7 +2319,6 @@ void PrintConfigDef::init_fff_params()
     def->enum_values.push_back("PVB");
     def->enum_values.push_back("SBS");
     def->enum_values.push_back("TPU");
-    def->enum_values.push_back("PETG-HF");
     def->mode = comSimple;
     def->set_default_value(new ConfigOptionStrings { "PLA" });
 
@@ -5742,6 +5741,24 @@ void PrintConfigDef::init_fff_params()
     def->mode = comAdvanced;
     def->min = 0.;
     def->set_default_value(new ConfigOptionFloat(3.));
+
+    def = this->add("prime_tower_brim_chamfer", coBool);
+    def->label = L("Brim chamfer");
+    def->tooltip = L("Enable gradual layer-by-layer reduction of the brim around the prime tower. "
+                     "This creates a chamfered/tapered effect, reducing material usage while "
+                     "maintaining first layer adhesion.");
+    def->mode = comDevelop;
+    def->set_default_value(new ConfigOptionBool(true));
+
+    def = this->add("prime_tower_brim_chamfer_max_width", coFloat);
+    def->label = L("Max chamfer width");
+    def->tooltip = L("Maximum width of the chamfer zone measured from the tower perimeter. "
+                     "The brim will reduce within this distance. Larger values create a more "
+                     "gradual taper but take more layers to complete.");
+    def->sidetext = "mm";	// milimeters, don't need translation
+    def->mode = comDevelop;
+    def->min = 0.;
+    def->set_default_value(new ConfigOptionFloat(4.0));
 
     def = this->add("wipe_tower_cone_angle", coFloat);
     def->label = L("Stabilization cone apex angle");

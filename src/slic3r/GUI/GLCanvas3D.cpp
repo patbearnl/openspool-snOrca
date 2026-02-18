@@ -1330,7 +1330,18 @@ void GLCanvas3D::reset_volumes()
     m_volumes.clear();
     m_dirty = true;
 
-    _set_warning_notification(EWarning::ObjectOutside, false);
+    auto pLater = wxGetApp().plater();
+    if (pLater) {
+        auto* notification_mgr = pLater->get_notification_manager();
+        if (notification_mgr) {
+            // Only update notification if we can safely access Plater's current canvas
+            // This ensures Plater::priv structure is still valid
+            auto* canvas = pLater->get_current_canvas3D();
+            if (canvas) {
+                _set_warning_notification(EWarning::ObjectOutside, false);
+            }
+        }
+    }
 }
 
 //BBS: get current plater's bounding box
@@ -2818,6 +2829,13 @@ void GLCanvas3D::reload_scene(bool refresh_immediately, bool force_full_scene_re
             if (printer_technology != ptSLA || !contained_min_one)
                 _set_warning_notification(EWarning::SlaSupportsOutside, false);
 
+            // Snapmaker: 螺旋抬升边界警告 - 无论模型是否超出边界都检测
+            if (contained_min_one) {
+                _set_warning_notification(EWarning::SpiralLiftNearBoundary, _is_any_volume_near_boundary_for_spiral_lift());
+            } else {
+                _set_warning_notification(EWarning::SpiralLiftNearBoundary, false);
+            }
+
             post_event(Event<bool>(EVT_GLCANVAS_ENABLE_ACTION_BUTTONS,
                 contained_min_one && !m_model->objects.empty() && !partlyOut));
         }
@@ -2825,6 +2843,7 @@ void GLCanvas3D::reload_scene(bool refresh_immediately, bool force_full_scene_re
             _set_warning_notification(EWarning::ObjectOutside, false);
             _set_warning_notification(EWarning::ObjectClashed, false);
             _set_warning_notification(EWarning::SlaSupportsOutside, false);
+            _set_warning_notification(EWarning::SpiralLiftNearBoundary, false);  // Snapmaker: 清空警告
             post_event(Event<bool>(EVT_GLCANVAS_ENABLE_ACTION_BUTTONS, false));
         }
     }
@@ -9691,11 +9710,23 @@ void GLCanvas3D::_set_warning_notification(EWarning warning, bool state)
             "Please solve the problem by moving it totally on or off the plate, and confirming that the height is within the build volume.");
         error = ErrorType::PLATER_ERROR;
         break;
+    // Snapmaker: 螺旋抬升靠近边界警告
+    case EWarning::SpiralLiftNearBoundary:
+         text = _u8L("Model too close to bed boundary. Disable spiral lifting or keep at least 3.5mm gap to avoid collision.");
+        error = ErrorType::SLICING_SERIOUS_WARNING;
+        break;
     }
     //BBS: this may happened when exit the app, plater is null
     if (!wxGetApp().plater())
         return;
+    NotificationManager* notification_managerEx = wxGetApp().plater()->get_notification_manager();
     auto& notification_manager = *wxGetApp().plater()->get_notification_manager();
+
+    if (!notification_managerEx)
+    {
+        BOOST_LOG_TRIVIAL(error) << __FUNCTION__ << boost::format("notification_manager is null");
+        return;
+    }
 
     switch (error)
     {
@@ -9736,6 +9767,12 @@ bool GLCanvas3D::_is_any_volume_outside() const
     }
 
     return false;
+}
+
+// Snapmaker: 检查是否有任何 volume 靠近边界（螺旋抬升风险）
+bool GLCanvas3D::_is_any_volume_near_boundary_for_spiral_lift() const
+{
+    return m_volumes.is_any_volume_near_boundary_for_spiral_lift();
 }
 
 void GLCanvas3D::_update_selection_from_hover()
