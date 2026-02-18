@@ -1903,11 +1903,14 @@ void Sidebar::update_presets(Preset::Type preset_type)
         }
 
         Preset& printer_preset = wxGetApp().preset_bundle->printers.get_edited_preset();
-        if (auto printer_structure_opt = printer_preset.config.option<ConfigOptionEnum<PrinterStructure>>("printer_structure")) {
-            wxGetApp().plater()->get_current_canvas3D()->get_arrange_settings().align_to_y_axis = (printer_structure_opt->value == PrinterStructure::psI3);
+        GLCanvas3D* canvas = wxGetApp().plater()->get_current_canvas3D();
+        if (canvas) {
+            if (auto printer_structure_opt = printer_preset.config.option<ConfigOptionEnum<PrinterStructure>>("printer_structure")) {
+                canvas->get_arrange_settings().align_to_y_axis = (printer_structure_opt->value == PrinterStructure::psI3);
+            }
+            else
+                canvas->get_arrange_settings().align_to_y_axis = false;
         }
-        else
-            wxGetApp().plater()->get_current_canvas3D()->get_arrange_settings().align_to_y_axis = false;
 
         break;
     }
@@ -2751,9 +2754,12 @@ void Sidebar::update_ui_from_settings()
     // BBS
     //p->object_manipulation->update_ui_from_settings();
     // update Cut gizmo, if it's open
-    p->plater->canvas3D()->update_gizmos_on_off_state();
-    p->plater->set_current_canvas_as_dirty();
-    p->plater->get_current_canvas3D()->request_extra_frame();
+    GLCanvas3D* canvas = p->plater->canvas3D();
+    if (canvas) {
+        canvas->update_gizmos_on_off_state();
+        p->plater->set_current_canvas_as_dirty();        
+        p->plater->get_current_canvas3D()->request_extra_frame();
+    }
 #if 0
     p->object_list->apply_volumes_order();
 #endif
@@ -4950,8 +4956,8 @@ std::vector<size_t> Plater::priv::load_files(const std::vector<fs::path>& input_
 
                             if (is_snapmaker_u1) {
                                 if (q->get_notification_manager()) {
-                                    std::string warning_text = _u8L("Warning: Printing by object with caution. This function may cause the print head to collide with printed parts during switching.");
-                                    q->get_notification_manager()->push_plater_error_notification(warning_text);
+                                    wxString warning_text = _L("Printing by object with caution. This function may cause the print head to collide with printed parts during switching.");
+                                    q->get_notification_manager()->push_plater_error_notification(warning_text.ToStdString());
                                 }
                             }
                         }
@@ -5673,7 +5679,13 @@ Selection& Plater::priv::get_selection()
 
 Selection& Plater::priv::get_curr_selection()
 {
-    return get_current_canvas3D()->get_selection();
+    GLCanvas3D* canvas = get_current_canvas3D();
+    if (!canvas) {
+        // During destruction, return a reference to a static empty selection
+        static Selection empty_selection;
+        return empty_selection;
+    }
+    return canvas->get_selection();
 }
 
 int Plater::priv::get_selected_object_idx() const
@@ -5703,10 +5715,15 @@ void Plater::priv::selection_changed()
     }
 
     // forces a frame render to update the view (to avoid a missed update if, for example, the context menu appears)
-    if (get_current_canvas3D()->get_canvas_type() == GLCanvas3D::CanvasAssembleView) {
-        assemble_view->render();
-    } else {
-        view3D->render();
+    GLCanvas3D* canvas = get_current_canvas3D();
+    if (canvas) {
+        if (canvas->get_canvas_type() == GLCanvas3D::CanvasAssembleView) {
+            if (assemble_view)
+                assemble_view->render();
+        } else {
+            if (view3D)
+                view3D->render();
+        }
     }
 }
 
@@ -6475,7 +6492,10 @@ bool Plater::priv::replace_volume_with_stl(int object_idx, int volume_idx, const
         return false;
     }
 
-    wxBusyInfo info(_L("Replace from:") + " " + from_u8(path), q->get_current_canvas3D()->get_wxglcanvas());
+    GLCanvas3D* canvas = q->get_current_canvas3D();
+    if (!canvas)
+        return false;
+    wxBusyInfo info(_L("Replace from:") + " " + from_u8(path), canvas->get_wxglcanvas());
 
     if (!snapshot.empty())
         q->take_snapshot(snapshot);
@@ -6772,7 +6792,13 @@ void Plater::priv::reload_from_disk()
             if (color_dlg.ShowModal() != wxID_OK) { filament_ids.clear(); }
         };
         wxBusyCursor wait;
-        wxBusyInfo info(_L("Reload from:") + " " + from_u8(path), q->get_current_canvas3D()->get_wxglcanvas());
+        GLCanvas3D* canvas = q->get_current_canvas3D();
+        if (!canvas)
+        {
+            BOOST_LOG_TRIVIAL(error) << __FUNCTION__ << "canvas is nullptr";
+            continue;
+        }
+        wxBusyInfo info(_L("Reload from:") + " " + from_u8(path), canvas->get_wxglcanvas());
 
         Model new_model;
         try
@@ -7784,9 +7810,9 @@ void Plater::priv::on_process_completed(SlicingProcessCompletedEvent &evt)
             }
             else if (is_finished && evt.finished())
             {
-                auto strTime = get_works_time(duration_ms);
-                auto slice_time = BP_SLICE_DURATION_TIME + std::string(":") + strTime;
-                sentryReportLog(SENTRY_LOG_TRACE, slice_time, BP_SLICE_DURATION);
+                //auto strTime = get_works_time(duration_ms);
+                //auto slice_time = BP_SLICE_DURATION_TIME + std::string(":") + strTime;
+                //sentryReportLog(SENTRY_LOG_TRACE, slice_time, BP_SLICE_DURATION);
 
                 m_slice_start_time    = {};
                 m_slice_timing_active = false; 
@@ -8841,16 +8867,26 @@ void Plater::priv::set_current_canvas_as_dirty()
 
 GLCanvas3D* Plater::priv::get_current_canvas3D(bool exclude_preview)
 {
-    if (current_panel == view3D)
+    // During destruction, these pointers may be null or point to destroyed objects
+    // Add null checks to prevent crashes during shutdown
+    if (current_panel == view3D) {
+        if (view3D)
+            return view3D->get_canvas3d();
+    }
+    else if (!exclude_preview && (current_panel == preview)) {
+        if (preview)
+            return preview->get_canvas3d();
+    }
+    else if (current_panel == assemble_view) {
+        if (assemble_view)
+            return assemble_view->get_canvas3d();
+    }
+    
+    //BBS default set to view3D, but check if it's still valid
+    if (view3D)
         return view3D->get_canvas3d();
-    else if (!exclude_preview && (current_panel == preview))
-        return preview->get_canvas3d();
-    else if (current_panel == assemble_view)
-        return assemble_view->get_canvas3d();
-    else //BBS default set to view3D
-        return view3D->get_canvas3d();
-
-    //return (current_panel == view3D) ? view3D->get_canvas3d() : ((current_panel == preview) ? preview->get_canvas3d() : nullptr);
+    
+    return nullptr;
 }
 
 void Plater::priv::unbind_canvas_event_handlers()
@@ -9388,7 +9424,13 @@ void Plater::priv::take_snapshot(const std::string& snapshot_name, const UndoRed
             tower.rotation = proj_cfg.opt_float("wipe_tower_rotation_angle");
         }
     }
-    const GLGizmosManager& gizmos = get_current_canvas3D()->get_canvas_type() == GLCanvas3D::CanvasAssembleView ? assemble_view->get_canvas3d()->get_gizmos_manager() : view3D->get_canvas3d()->get_gizmos_manager();
+    GLCanvas3D* canvas = get_current_canvas3D();
+    if (!canvas) {
+        // During destruction, skip snapshot
+        return;
+    }
+    
+    const GLGizmosManager& gizmos = canvas->get_canvas_type() == GLCanvas3D::CanvasAssembleView ? assemble_view->get_canvas3d()->get_gizmos_manager() : view3D->get_canvas3d()->get_gizmos_manager();
 
     if (snapshot_type == UndoRedo::SnapshotType::ProjectSeparator)
         this->undo_redo_stack().clear();
@@ -9422,7 +9464,9 @@ void Plater::priv::undo()
     // BBS: undo-redo until modify record
     while (--it_current != snapshots.begin() && !snapshot_modifies_project(*it_current));
     if (it_current == snapshots.begin()) return;
-    if (get_current_canvas3D()->get_canvas_type() == GLCanvas3D::CanvasAssembleView) {
+    GLCanvas3D* canvas = get_current_canvas3D();
+    if (!canvas) return;
+    if (canvas->get_canvas_type() == GLCanvas3D::CanvasAssembleView) {
         if (it_current->snapshot_data.snapshot_type != UndoRedo::SnapshotType::GizmoAction &&
             it_current->snapshot_data.snapshot_type != UndoRedo::SnapshotType::EnteringGizmo &&
             it_current->snapshot_data.snapshot_type != UndoRedo::SnapshotType::LeavingGizmoNoAction &&
@@ -9530,9 +9574,13 @@ void Plater::priv::undo_redo_to(std::vector<UndoRedo::Snapshot>::const_iterator 
     // Make a copy of the snapshot, undo/redo could invalidate the iterator
     const UndoRedo::Snapshot snapshot_copy = *it_snapshot;
     // Do the jump in time.
+    GLCanvas3D* canvas = get_current_canvas3D();
+    if (!canvas) return;
+    
+    bool is_assemble = canvas->get_canvas_type() == GLCanvas3D::CanvasAssembleView;
     if (it_snapshot->timestamp < this->undo_redo_stack().active_snapshot_time() ?
-        this->undo_redo_stack().undo(model, get_current_canvas3D()->get_canvas_type() == GLCanvas3D::CanvasAssembleView ? assemble_view->get_canvas3d()->get_selection() : this->view3D->get_canvas3d()->get_selection(), get_current_canvas3D()->get_canvas_type() == GLCanvas3D::CanvasAssembleView ? assemble_view->get_canvas3d()->get_gizmos_manager() : this->view3D->get_canvas3d()->get_gizmos_manager(), this->partplate_list, top_snapshot_data, it_snapshot->timestamp) :
-        this->undo_redo_stack().redo(model, get_current_canvas3D()->get_canvas_type() == GLCanvas3D::CanvasAssembleView ? assemble_view->get_canvas3d()->get_gizmos_manager() : this->view3D->get_canvas3d()->get_gizmos_manager(), this->partplate_list, it_snapshot->timestamp)) {
+        this->undo_redo_stack().undo(model, is_assemble ? assemble_view->get_canvas3d()->get_selection() : this->view3D->get_canvas3d()->get_selection(), is_assemble ? assemble_view->get_canvas3d()->get_gizmos_manager() : this->view3D->get_canvas3d()->get_gizmos_manager(), this->partplate_list, top_snapshot_data, it_snapshot->timestamp) :
+        this->undo_redo_stack().redo(model, is_assemble ? assemble_view->get_canvas3d()->get_gizmos_manager() : this->view3D->get_canvas3d()->get_gizmos_manager(), this->partplate_list, it_snapshot->timestamp)) {
         if (printer_technology_changed) {
             // Switch to the other printer technology. Switch to the last printer active for that particular technology.
             AppConfig *app_config = wxGetApp().app_config;
@@ -9610,7 +9658,11 @@ void Plater::priv::undo_redo_to(std::vector<UndoRedo::Snapshot>::const_iterator 
 
 void Plater::priv::update_after_undo_redo(const UndoRedo::Snapshot& snapshot, bool /* temp_snapshot_was_taken */)
 {
-    get_current_canvas3D()->get_canvas_type() == GLCanvas3D::CanvasAssembleView ? assemble_view->get_canvas3d()->get_selection().clear() : this->view3D->get_canvas3d()->get_selection().clear();
+    GLCanvas3D* canvas = get_current_canvas3D();
+    if (!canvas) return;
+    
+    bool is_assemble = canvas->get_canvas_type() == GLCanvas3D::CanvasAssembleView;
+    is_assemble ? assemble_view->get_canvas3d()->get_selection().clear() : this->view3D->get_canvas3d()->get_selection().clear();
     // Update volumes from the deserializd model, always stop / update the background processing (for both the SLA and FFF technologies).
     this->update((unsigned int)UpdateParams::FORCE_BACKGROUND_PROCESSING_UPDATE | (unsigned int)UpdateParams::POSTPONE_VALIDATION_ERROR_MESSAGE);
     // Release old snapshots if the memory allocated is excessive. This may remove the top most snapshot if jumping to the very first snapshot.
@@ -9619,10 +9671,10 @@ void Plater::priv::update_after_undo_redo(const UndoRedo::Snapshot& snapshot, bo
     // triangle meshes may have gotten released from the scene or the background processing, therefore now being calculated into the Undo / Redo stack size.
         this->undo_redo_stack().release_least_recently_used();
     //YS_FIXME update obj_list from the deserialized model (maybe store ObjectIDs into the tree?) (no selections at this point of time)
-        get_current_canvas3D()->get_canvas_type() == GLCanvas3D::CanvasAssembleView ?
+        is_assemble ?
             assemble_view->get_canvas3d()->get_selection().set_deserialized(GUI::Selection::EMode(this->undo_redo_stack().selection_deserialized().mode), this->undo_redo_stack().selection_deserialized().volumes_and_instances) :
             this->view3D->get_canvas3d()->get_selection().set_deserialized(GUI::Selection::EMode(this->undo_redo_stack().selection_deserialized().mode), this->undo_redo_stack().selection_deserialized().volumes_and_instances);
-    get_current_canvas3D()->get_canvas_type() == GLCanvas3D::CanvasAssembleView ?
+    is_assemble ?
         assemble_view->get_canvas3d()->get_gizmos_manager().update_after_undo_redo(snapshot) :
         this->view3D->get_canvas3d()->get_gizmos_manager().update_after_undo_redo(snapshot);
 
@@ -11301,7 +11353,9 @@ void Plater::load_gcode(const wxString& filename)
     p->preview->reload_print(false, m_only_gcode);
     wxGetApp().mainframe->select_tab(MainFrame::tpPreview);
     p->set_current_panel(p->preview, true);
-    p->get_current_canvas3D()->render();
+    GLCanvas3D* canvas = p->get_current_canvas3D();
+    if (canvas)
+        canvas->render();
     //p->notification_manager->bbl_show_plateinfo_notification(into_u8(_L("Preview only mode for gcode file.")));
 
     wxBusyCursor wait;
@@ -12301,7 +12355,9 @@ void Plater::set_selected_visible(bool visible)
     Plater::TakeSnapshot snapshot(this, "Set Selected Objects Visible in AssembleView");
     get_ui_job_worker().cancel_all();
 
-    p->get_current_canvas3D()->set_selected_visible(visible);
+    GLCanvas3D* canvas = p->get_current_canvas3D();
+    if (canvas)
+        canvas->set_selected_visible(visible);
 }
 
 
@@ -12321,7 +12377,9 @@ void Plater::remove_selected()
 
     //BBS delete current selected
     // p->view3D->delete_selected();
-    p->get_current_canvas3D()->delete_selected();
+    GLCanvas3D* canvas = p->get_current_canvas3D();
+    if (canvas)
+        canvas->delete_selected();
 }
 
 void Plater::increase_instances(size_t num)
@@ -13820,16 +13878,6 @@ void Plater::send_gcode_legacy(int plate_idx, Export3mfProgressFn proFn, bool us
         upload_job = PrintHostJob(physical_printer_config);
     }
 
-    //if (wxGetApp().app_config->get("use_new_connect") == "true") {
-    //    /*std::shared_ptr<PrintHost> temp;
-    //    wxGetApp().get_connect_host(temp);
-    //    upload_job.printhost = std::unique_ptr<PrintHost>(temp.get());*/
-    //    upload_job = PrintHostJob(wxGetApp().get_host_config());
-    //} else {
-    //    upload_job = PrintHostJob(physical_printer_config); //
-    //}
-    
-
     if (upload_job.empty())
         return;
 
@@ -14646,7 +14694,9 @@ void Plater::changed_object(ModelObject &object){
     p->schedule_background_process();
         
     // Check outside bed
-    get_current_canvas3D()->requires_check_outside_state();
+    GLCanvas3D* canvas = get_current_canvas3D();
+    if (canvas)
+        canvas->requires_check_outside_state();
 }
 
 void Plater::changed_object(int obj_idx)

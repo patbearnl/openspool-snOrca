@@ -4340,6 +4340,11 @@ msgid ""
 "confirming that the height is within the build volume."
 msgstr ""
 
+msgid ""
+"Model too close to bed boundary. Disable spiral lifting or keep at least "
+"3.5mm gap to avoid collision."
+msgstr ""
+
 msgid "Calibration step selection"
 msgstr ""
 
@@ -16209,7 +16214,10 @@ msgstr ""
 msgid "Point and point assembly"
 msgstr ""
 
-msgid "Please do not include the special characters #, *, and ;in filenames."
+msgid "Please do not include the special characters #, *, ;, \\, /, :, \", <, >, or | in filenames."
+msgstr ""
+
+msgid "The filename '%s' contains special characters (#, *, ;, \\, /, :, \", <, >, or |) which may cause issues.Do you wish to continue?"
 msgstr ""
 
 msgid "Connection has been disconnected and recovery attempt failed. Please reconnect."

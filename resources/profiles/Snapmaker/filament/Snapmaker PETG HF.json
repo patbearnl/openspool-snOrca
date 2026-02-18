@@ -29,9 +29,6 @@
     "filament_end_gcode": [
         ""
     ],
-    "filament_type": [
-        "PETG-HF"
-    ],
     "filament_max_volumetric_speed": [
         "20"
     ],
@@ -72,10 +69,10 @@
         "5"
     ],
     "textured_plate_temp": [
-        "70"
+        "80"
     ],
     "textured_plate_temp_initial_layer": [
-        "70"
+        "80"
     ],
     "additional_cooling_fan_speed": [
         "10"
