@@ -1,0 +1,112 @@
+name: Release (Windows)
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    name: Build + Publish Windows Release
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          lfs: "true"
+
+      - name: Setup MSVC
+        uses: microsoft/setup-msbuild@v2
+
+      - uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: "~3.28.0"
+
+      - name: Set version vars
+        id: vars
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          if ([string]::IsNullOrWhiteSpace($tag)) { throw "Missing github.ref_name" }
+
+          $verPure = ""
+          $versionContent = Get-Content version.inc -Raw
+          if ($versionContent -match 'set\(Snapmaker_VERSION \"(.*?)\"\)') {
+            $verPure = $matches[1]
+          }
+
+          $isTag = $tag.StartsWith("v")
+          if ($isTag -and -not [string]::IsNullOrWhiteSpace($verPure)) {
+            $expected = "v$verPure"
+            if ($tag -ne $expected) {
+              Write-Warning "Tag ($tag) does not match version.inc ($expected). Proceeding anyway."
+            }
+          }
+
+          "tag=$tag" | Out-File -Append -FilePath $env:GITHUB_OUTPUT -Encoding utf8
+          "ver_pure=$verPure" | Out-File -Append -FilePath $env:GITHUB_OUTPUT -Encoding utf8
+
+      - name: Install NSIS
+        shell: pwsh
+        run: |
+          choco install nsis -y
+
+      - name: Build slicer (Release)
+        shell: pwsh
+        env:
+          WindowsSdkDir: 'C:\Program Files (x86)\Windows Kits\10\'
+          WindowsSDKVersion: '10.0.26100.0\'
+        run: |
+          .\build_release_vs2022.bat slicer
+
+      - name: Create installer (NSIS)
+        shell: pwsh
+        working-directory: ${{ github.workspace }}\build
+        run: |
+          cpack -G NSIS
+
+      - name: Create portable zip
+        shell: pwsh
+        working-directory: ${{ github.workspace }}\build
+        run: |
+          & "C:\Program Files\7-Zip\7z.exe" a -tzip "snOrca_OpenSpool_Windows_${{ steps.vars.outputs.tag }}_portable.zip" "${{ github.workspace }}\build\Snapmaker_Orca"
+
+      - name: Zip installer exe (avoid direct .exe download)
+        shell: pwsh
+        working-directory: ${{ github.workspace }}\build
+        run: |
+          $exe = Get-ChildItem -Path . -Filter "Snapmaker_Orca*.exe" | Select-Object -First 1
+          if (-not $exe) { throw "Installer exe not found in build folder." }
+          & "C:\Program Files\7-Zip\7z.exe" a -tzip "snOrca_OpenSpool_Windows_${{ steps.vars.outputs.tag }}_installer.zip" $exe.FullName
+
+      - name: Generate SHA256SUMS
+        shell: pwsh
+        working-directory: ${{ github.workspace }}\build
+        run: |
+          $files = @(
+            "snOrca_OpenSpool_Windows_${{ steps.vars.outputs.tag }}_portable.zip",
+            "snOrca_OpenSpool_Windows_${{ steps.vars.outputs.tag }}_installer.zip"
+          )
+          $out = @()
+          foreach ($f in $files) {
+            if (-not (Test-Path $f)) { throw "Missing file: $f" }
+            $h = (Get-FileHash -Algorithm SHA256 $f).Hash.ToLowerInvariant()
+            $out += "$h  $f"
+          }
+          $out | Out-File -FilePath "SHA256SUMS.txt" -Encoding ascii
+
+      - name: Publish GitHub Release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.vars.outputs.tag }}
+          name: ${{ steps.vars.outputs.tag }}
+          files: |
+            build/snOrca_OpenSpool_Windows_${{ steps.vars.outputs.tag }}_portable.zip
+            build/snOrca_OpenSpool_Windows_${{ steps.vars.outputs.tag }}_installer.zip
+            build/SHA256SUMS.txt
+
