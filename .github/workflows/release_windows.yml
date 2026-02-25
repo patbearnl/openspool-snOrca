@@ -134,7 +134,8 @@ jobs:
         shell: pwsh
         working-directory: ${{ github.workspace }}\build
         run: |
-          $exe = Get-ChildItem -Path . -Filter "Snapmaker_Orca*.exe" | Select-Object -First 1
+          $exe = Get-ChildItem -Path . -Filter "snOrca_OpenSpool_Windows_Installer_*.exe" | Select-Object -First 1
+          if (-not $exe) { $exe = Get-ChildItem -Path . -Filter "*.exe" | Select-Object -First 1 }
           if (-not $exe) { throw "Installer exe not found in build folder." }
           & "C:\Program Files\7-Zip\7z.exe" a -tzip "snOrca_OpenSpool_Windows_${{ needs.prep.outputs.tag }}_installer.zip" $exe.FullName
 

@@ -301,7 +301,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Snapmaker_Orca_Windows_${{ env.ver }}
-          path: ${{ github.workspace }}/build/Snapmaker_Orca*.exe
+          path: ${{ github.workspace }}/build/snOrca_OpenSpool_Windows_Installer_*.exe
 
       - name: Upload artifacts Win PDB
         if: inputs.os == 'windows-latest'
@@ -318,7 +318,7 @@ jobs:
           path: ${{ github.workspace }}/build/src/Release/Snapmaker_Orca_profile_validator.exe
 
       - name: Deploy Windows release portable
-        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/2.2.3') && inputs.os == 'windows-latest'
+        if: github.repository == 'Snapmaker/OrcaSlicer' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/2.2.3') && inputs.os == 'windows-latest'
         uses: WebFreak001/deploy-nightly@v3.2.0
         with:
           upload_url: https://uploads.github.com/repos/Snapmaker/OrcaSlicer/releases/169912305/assets{?name,label}
@@ -329,18 +329,18 @@ jobs:
           max_releases: 1
 
       - name: Deploy Windows release installer
-        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/2.2.3') && inputs.os == 'windows-latest'
+        if: github.repository == 'Snapmaker/OrcaSlicer' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/2.2.3') && inputs.os == 'windows-latest'
         uses: WebFreak001/deploy-nightly@v3.2.0
         with:
           upload_url: https://uploads.github.com/repos/Snapmaker/OrcaSlicer/releases/169912305/assets{?name,label}
           release_id: 169912305
-          asset_path: ${{ github.workspace }}/build/Snapmaker_Orca_Windows_Installer_${{ env.ver }}.exe
-          asset_name: Snapmaker_Orca_Windows_Installer_${{ env.ver }}.exe
+          asset_path: ${{ github.workspace }}/build/snOrca_OpenSpool_Windows_Installer_${{ env.ver }}.exe
+          asset_name: snOrca_OpenSpool_Windows_Installer_${{ env.ver }}.exe
           asset_content_type: application/x-msdownload
           max_releases: 1
 
       - name: Deploy Windows Snapmaker_Orca_profile_validator release
-        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/2.2.3') && inputs.os == 'windows-latest'
+        if: github.repository == 'Snapmaker/OrcaSlicer' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/2.2.3') && inputs.os == 'windows-latest'
         uses: WebFreak001/deploy-nightly@v3.2.0
         with:
           upload_url: https://uploads.github.com/repos/Snapmaker/OrcaSlicer/releases/169912305/assets{?name,label}
