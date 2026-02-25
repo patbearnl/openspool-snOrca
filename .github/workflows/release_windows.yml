@@ -10,22 +10,21 @@ permissions:
   contents: write
 
 jobs:
-  windows:
-    name: Build + Publish Windows Release
+  prep:
+    name: Prepare cache keys
     runs-on: windows-latest
+    outputs:
+      cache-key: ${{ steps.cache_vars.outputs.cache-key }}
+      cache-path: ${{ steps.cache_vars.outputs.cache-path }}
+      valid-cache: ${{ steps.cache_lookup.outputs.cache-hit }}
+      tag: ${{ steps.vars.outputs.tag }}
+      ver_pure: ${{ steps.vars.outputs.ver_pure }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v5
         with:
           lfs: "true"
-
-      - name: Setup MSVC
-        uses: microsoft/setup-msbuild@v2
-
-      - uses: lukka/get-cmake@latest
-        with:
-          cmakeVersion: "~3.28.0"
 
       - name: Set version vars
         id: vars
@@ -51,6 +50,61 @@ jobs:
           "tag=$tag" | Out-File -Append -FilePath $env:GITHUB_OUTPUT -Encoding utf8
           "ver_pure=$verPure" | Out-File -Append -FilePath $env:GITHUB_OUTPUT -Encoding utf8
 
+      - name: Compute cache vars
+        id: cache_vars
+        shell: pwsh
+        run: |
+          $key = "windows-latest-cache-orcaslicer_deps-build-${{ hashFiles('deps/**') }}"
+          $path = "${{ github.workspace }}\\deps\\build\\OrcaSlicer_dep"
+          "cache-key=$key" | Out-File -Append -FilePath $env:GITHUB_OUTPUT -Encoding utf8
+          "cache-path=$path" | Out-File -Append -FilePath $env:GITHUB_OUTPUT -Encoding utf8
+
+      - name: Cache lookup
+        id: cache_lookup
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.cache_vars.outputs.cache-path }}
+          key: ${{ steps.cache_vars.outputs.cache-key }}
+          lookup-only: true
+
+  deps:
+    name: Build deps (if needed)
+    needs: [prep]
+    uses: ./.github/workflows/build_deps.yml
+    with:
+      cache-key: ${{ needs.prep.outputs.cache-key }}
+      cache-path: ${{ needs.prep.outputs.cache-path }}
+      valid-cache: ${{ needs.prep.outputs.valid-cache == 'true' }}
+      os: windows-latest
+      build-deps-only: false
+      force-build: false
+    secrets: inherit
+
+  windows:
+    name: Build + Publish Windows Release
+    needs: [prep, deps]
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          lfs: "true"
+
+      - name: Load cached deps
+        uses: actions/cache@v4
+        with:
+          path: ${{ needs.prep.outputs.cache-path }}
+          key: ${{ needs.prep.outputs.cache-key }}
+          fail-on-cache-miss: true
+
+      - name: Setup MSVC
+        uses: microsoft/setup-msbuild@v2
+
+      - uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: "~3.28.0"
+
       - name: Install NSIS
         shell: pwsh
         run: |
@@ -74,7 +128,7 @@ jobs:
         shell: pwsh
         working-directory: ${{ github.workspace }}\build
         run: |
-          & "C:\Program Files\7-Zip\7z.exe" a -tzip "snOrca_OpenSpool_Windows_${{ steps.vars.outputs.tag }}_portable.zip" "${{ github.workspace }}\build\Snapmaker_Orca"
+          & "C:\Program Files\7-Zip\7z.exe" a -tzip "snOrca_OpenSpool_Windows_${{ needs.prep.outputs.tag }}_portable.zip" "${{ github.workspace }}\build\Snapmaker_Orca"
 
       - name: Zip installer exe (avoid direct .exe download)
         shell: pwsh
@@ -82,15 +136,15 @@ jobs:
         run: |
           $exe = Get-ChildItem -Path . -Filter "Snapmaker_Orca*.exe" | Select-Object -First 1
           if (-not $exe) { throw "Installer exe not found in build folder." }
-          & "C:\Program Files\7-Zip\7z.exe" a -tzip "snOrca_OpenSpool_Windows_${{ steps.vars.outputs.tag }}_installer.zip" $exe.FullName
+          & "C:\Program Files\7-Zip\7z.exe" a -tzip "snOrca_OpenSpool_Windows_${{ needs.prep.outputs.tag }}_installer.zip" $exe.FullName
 
       - name: Generate SHA256SUMS
         shell: pwsh
         working-directory: ${{ github.workspace }}\build
         run: |
           $files = @(
-            "snOrca_OpenSpool_Windows_${{ steps.vars.outputs.tag }}_portable.zip",
-            "snOrca_OpenSpool_Windows_${{ steps.vars.outputs.tag }}_installer.zip"
+            "snOrca_OpenSpool_Windows_${{ needs.prep.outputs.tag }}_portable.zip",
+            "snOrca_OpenSpool_Windows_${{ needs.prep.outputs.tag }}_installer.zip"
           )
           $out = @()
           foreach ($f in $files) {
@@ -103,10 +157,9 @@ jobs:
       - name: Publish GitHub Release assets
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.vars.outputs.tag }}
-          name: ${{ steps.vars.outputs.tag }}
+          tag_name: ${{ needs.prep.outputs.tag }}
+          name: ${{ needs.prep.outputs.tag }}
           files: |
-            build/snOrca_OpenSpool_Windows_${{ steps.vars.outputs.tag }}_portable.zip
-            build/snOrca_OpenSpool_Windows_${{ steps.vars.outputs.tag }}_installer.zip
+            build/snOrca_OpenSpool_Windows_${{ needs.prep.outputs.tag }}_portable.zip
+            build/snOrca_OpenSpool_Windows_${{ needs.prep.outputs.tag }}_installer.zip
             build/SHA256SUMS.txt
-
